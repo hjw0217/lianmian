@@ -12,5 +12,19 @@
     "timeSlot": "09:00-10:00",
     "status": "confirmed",
     "createdAt": "2026-05-18T03:49:54.552Z"
+  },
+  {
+    "id": "bk-002",
+    "bookingNo": "TR20260518427",
+    "studentName": "王阿姨",
+    "phone": "13912345678",
+    "requirement": "想学民歌",
+    "course": "美声唱法课",
+    "teacher": "张老师",
+    "classroom": "麦房C",
+    "date": "2026-05-18",
+    "timeSlot": "11:00-12:00",
+    "status": "confirmed",
+    "createdAt": "2026-05-18T04:08:36.964Z"
   }
 ]
