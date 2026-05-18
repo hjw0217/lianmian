@@ -1,0 +1,17 @@
+[
+  {
+    "id": "bk-001",
+    "bookingNo": "TR20260518378",
+    "studentName": "张小明",
+    "phone": "13812345678",
+    "age": "8-10岁",
+    "requirement": "想学钢琴",
+    "course": "美术创意课",
+    "teacher": "李老师",
+    "classroom": "B205",
+    "date": "2026-05-18",
+    "timeSlot": "10:00-11:00",
+    "status": "confirmed",
+    "createdAt": "2026-05-18T03:34:51.805Z"
+  }
+]

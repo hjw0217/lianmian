@@ -1,0 +1,302 @@
+[
+  {
+    "id": "ts-001",
+    "date": "2026-05-18",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "course": "钢琴启蒙课",
+    "teacher": "王老师",
+    "classroom": "A301",
+    "status": "available"
+  },
+  {
+    "id": "ts-002",
+    "date": "2026-05-18",
+    "startTime": "10:00",
+    "endTime": "11:00",
+    "course": "美术创意课",
+    "teacher": "李老师",
+    "classroom": "B205",
+    "status": "booked"
+  },
+  {
+    "id": "ts-003",
+    "date": "2026-05-18",
+    "startTime": "11:00",
+    "endTime": "12:00",
+    "course": "编程思维课",
+    "teacher": "张老师",
+    "classroom": "C102",
+    "status": "available"
+  },
+  {
+    "id": "ts-004",
+    "date": "2026-05-18",
+    "startTime": "14:00",
+    "endTime": "15:00",
+    "course": "英语口语课",
+    "teacher": "陈老师",
+    "classroom": "D408",
+    "status": "available"
+  },
+  {
+    "id": "ts-005",
+    "date": "2026-05-19",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "course": "美术创意课",
+    "teacher": "李老师",
+    "classroom": "B205",
+    "status": "booked"
+  },
+  {
+    "id": "ts-006",
+    "date": "2026-05-19",
+    "startTime": "10:00",
+    "endTime": "11:00",
+    "course": "编程思维课",
+    "teacher": "张老师",
+    "classroom": "C102",
+    "status": "available"
+  },
+  {
+    "id": "ts-007",
+    "date": "2026-05-19",
+    "startTime": "11:00",
+    "endTime": "12:00",
+    "course": "英语口语课",
+    "teacher": "陈老师",
+    "classroom": "D408",
+    "status": "available"
+  },
+  {
+    "id": "ts-008",
+    "date": "2026-05-19",
+    "startTime": "14:00",
+    "endTime": "15:00",
+    "course": "钢琴启蒙课",
+    "teacher": "王老师",
+    "classroom": "A301",
+    "status": "available"
+  },
+  {
+    "id": "ts-009",
+    "date": "2026-05-20",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "course": "编程思维课",
+    "teacher": "张老师",
+    "classroom": "C102",
+    "status": "available"
+  },
+  {
+    "id": "ts-010",
+    "date": "2026-05-20",
+    "startTime": "10:00",
+    "endTime": "11:00",
+    "course": "英语口语课",
+    "teacher": "陈老师",
+    "classroom": "D408",
+    "status": "available"
+  },
+  {
+    "id": "ts-011",
+    "date": "2026-05-20",
+    "startTime": "11:00",
+    "endTime": "12:00",
+    "course": "钢琴启蒙课",
+    "teacher": "王老师",
+    "classroom": "A301",
+    "status": "available"
+  },
+  {
+    "id": "ts-012",
+    "date": "2026-05-20",
+    "startTime": "14:00",
+    "endTime": "15:00",
+    "course": "美术创意课",
+    "teacher": "李老师",
+    "classroom": "B205",
+    "status": "available"
+  },
+  {
+    "id": "ts-013",
+    "date": "2026-05-21",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "course": "英语口语课",
+    "teacher": "陈老师",
+    "classroom": "D408",
+    "status": "available"
+  },
+  {
+    "id": "ts-014",
+    "date": "2026-05-21",
+    "startTime": "10:00",
+    "endTime": "11:00",
+    "course": "钢琴启蒙课",
+    "teacher": "王老师",
+    "classroom": "A301",
+    "status": "available"
+  },
+  {
+    "id": "ts-015",
+    "date": "2026-05-21",
+    "startTime": "11:00",
+    "endTime": "12:00",
+    "course": "美术创意课",
+    "teacher": "李老师",
+    "classroom": "B205",
+    "status": "available"
+  },
+  {
+    "id": "ts-016",
+    "date": "2026-05-21",
+    "startTime": "14:00",
+    "endTime": "15:00",
+    "course": "编程思维课",
+    "teacher": "张老师",
+    "classroom": "C102",
+    "status": "available"
+  },
+  {
+    "id": "ts-017",
+    "date": "2026-05-22",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "course": "钢琴启蒙课",
+    "teacher": "王老师",
+    "classroom": "A301",
+    "status": "available"
+  },
+  {
+    "id": "ts-018",
+    "date": "2026-05-22",
+    "startTime": "10:00",
+    "endTime": "11:00",
+    "course": "美术创意课",
+    "teacher": "李老师",
+    "classroom": "B205",
+    "status": "available"
+  },
+  {
+    "id": "ts-019",
+    "date": "2026-05-22",
+    "startTime": "11:00",
+    "endTime": "12:00",
+    "course": "编程思维课",
+    "teacher": "张老师",
+    "classroom": "C102",
+    "status": "available"
+  },
+  {
+    "id": "ts-020",
+    "date": "2026-05-22",
+    "startTime": "14:00",
+    "endTime": "15:00",
+    "course": "英语口语课",
+    "teacher": "陈老师",
+    "classroom": "D408",
+    "status": "available"
+  },
+  {
+    "id": "ts-021",
+    "date": "2026-05-23",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "course": "美术创意课",
+    "teacher": "李老师",
+    "classroom": "B205",
+    "status": "available"
+  },
+  {
+    "id": "ts-022",
+    "date": "2026-05-23",
+    "startTime": "10:00",
+    "endTime": "11:00",
+    "course": "编程思维课",
+    "teacher": "张老师",
+    "classroom": "C102",
+    "status": "available"
+  },
+  {
+    "id": "ts-023",
+    "date": "2026-05-23",
+    "startTime": "11:00",
+    "endTime": "12:00",
+    "course": "英语口语课",
+    "teacher": "陈老师",
+    "classroom": "D408",
+    "status": "available"
+  },
+  {
+    "id": "ts-024",
+    "date": "2026-05-23",
+    "startTime": "14:00",
+    "endTime": "15:00",
+    "course": "钢琴启蒙课",
+    "teacher": "王老师",
+    "classroom": "A301",
+    "status": "available"
+  },
+  {
+    "id": "ts-025",
+    "date": "2026-05-23",
+    "startTime": "15:00",
+    "endTime": "16:00",
+    "course": "美术创意课",
+    "teacher": "李老师",
+    "classroom": "B205",
+    "status": "available"
+  },
+  {
+    "id": "ts-026",
+    "date": "2026-05-24",
+    "startTime": "09:00",
+    "endTime": "10:00",
+    "course": "编程思维课",
+    "teacher": "张老师",
+    "classroom": "C102",
+    "status": "available"
+  },
+  {
+    "id": "ts-027",
+    "date": "2026-05-24",
+    "startTime": "10:00",
+    "endTime": "11:00",
+    "course": "英语口语课",
+    "teacher": "陈老师",
+    "classroom": "D408",
+    "status": "available"
+  },
+  {
+    "id": "ts-028",
+    "date": "2026-05-24",
+    "startTime": "11:00",
+    "endTime": "12:00",
+    "course": "钢琴启蒙课",
+    "teacher": "王老师",
+    "classroom": "A301",
+    "status": "available"
+  },
+  {
+    "id": "ts-029",
+    "date": "2026-05-24",
+    "startTime": "14:00",
+    "endTime": "15:00",
+    "course": "美术创意课",
+    "teacher": "李老师",
+    "classroom": "B205",
+    "status": "available"
+  },
+  {
+    "id": "ts-030",
+    "date": "2026-05-24",
+    "startTime": "15:00",
+    "endTime": "16:00",
+    "course": "编程思维课",
+    "teacher": "张老师",
+    "classroom": "C102",
+    "status": "available"
+  }
+]
