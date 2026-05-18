@@ -86,11 +86,9 @@ function getSupabaseCredentials(): SupabaseCredentials {
   if (!url) {
     throw new Error('COZE_SUPABASE_URL or SUPABASE_URL is not set');
   }
-  if (!anonKey) {
-    throw new Error('COZE_SUPABASE_ANON_KEY or SUPABASE_ANON_KEY is not set');
-  }
 
-  return { url, anonKey };
+  // anonKey may be unavailable on Vercel; use service role key as fallback
+  return { url, anonKey: anonKey || '' };
 }
 
 function getSupabaseServiceRoleKey(): string | undefined {
@@ -100,13 +98,18 @@ function getSupabaseServiceRoleKey(): string | undefined {
 
 function getSupabaseClient(token?: string): SupabaseClient {
   const { url, anonKey } = getSupabaseCredentials();
+  const serviceRoleKey = getSupabaseServiceRoleKey();
 
+  // Determine which key to use: token-based → anonKey, otherwise → serviceRoleKey → anonKey
   let key: string;
-  if (token) {
+  if (token && anonKey) {
     key = anonKey;
   } else {
-    const serviceRoleKey = getSupabaseServiceRoleKey();
     key = serviceRoleKey ?? anonKey;
+  }
+
+  if (!key) {
+    throw new Error('No Supabase key available. Set SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY.');
   }
 
   const globalOptions: Record<string, any> = {};
