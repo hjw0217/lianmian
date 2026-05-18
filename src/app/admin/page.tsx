@@ -26,6 +26,7 @@ interface TimeSlot {
   endTime: string;
   teacher: string;
   status: 'available' | 'booked' | 'expired';
+  maxParticipants: number;
 }
 
 interface Booking {
@@ -58,6 +59,7 @@ export default function AdminPage() {
     startTime: '',
     endTime: '',
     teacher: '',
+    maxParticipants: 10,
   });
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [copiedSlotId, setCopiedSlotId] = useState<string | null>(null);
@@ -151,7 +153,7 @@ export default function AdminPage() {
   // TimeSlot CRUD
   const openAddModal = () => {
     setEditingSlot(null);
-    setFormData({ date: '', startTime: '', endTime: '', teacher: '' });
+    setFormData({ date: '', startTime: '', endTime: '', teacher: '', maxParticipants: 10 });
     setShowModal(true);
   };
 
@@ -162,6 +164,7 @@ export default function AdminPage() {
       startTime: slot.startTime,
       endTime: slot.endTime,
       teacher: slot.teacher,
+      maxParticipants: slot.maxParticipants || 10,
     });
     setShowModal(true);
   };
@@ -421,11 +424,9 @@ export default function AdminPage() {
                         <div className="text-xs text-muted-foreground">
                           {slot.date} {slot.startTime}-{slot.endTime}
                         </div>
-                        {bookingCount > 0 && (
-                          <div className="text-xs text-primary">
-                            已预约 {bookingCount} 人
-                          </div>
-                        )}
+                        <div className={`text-xs ${bookingCount >= (slot.maxParticipants || 999) ? 'text-destructive' : 'text-primary'}`}>
+                          已预约 {bookingCount}/{slot.maxParticipants || '-'} 人
+                        </div>
                       </div>
                     </div>
                     <div className="mt-3 flex justify-end gap-1 border-t border-border/10 pt-3">
@@ -473,7 +474,7 @@ export default function AdminPage() {
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">时间段</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">讲师</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">状态</th>
-                      <th className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground">预约人数</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground">预约/上限</th>
                       <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">操作</th>
                     </tr>
                   </thead>
@@ -490,11 +491,9 @@ export default function AdminPage() {
                           <td className="px-4 py-3 text-sm text-foreground">{slot.teacher}</td>
                           <td className="px-4 py-3">{statusBadge(slot.status)}</td>
                           <td className="px-4 py-3 text-center text-sm text-foreground">
-                            {bookingCount > 0 ? (
-                              <span className="font-medium text-primary">{bookingCount} 人</span>
-                            ) : (
-                              <span className="text-muted-foreground">-</span>
-                            )}
+                            <span className={bookingCount >= (slot.maxParticipants || 999) ? 'text-destructive font-medium' : bookingCount > 0 ? 'font-medium text-primary' : ''}>
+                              {bookingCount}/{slot.maxParticipants || '-'}
+                            </span>
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center justify-end gap-1">
@@ -698,17 +697,24 @@ export default function AdminPage() {
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-foreground">讲师</label>
-                <select
+                <input
+                  type="text"
                   value={formData.teacher}
                   onChange={(e) => setFormData({ ...formData, teacher: e.target.value })}
-                  className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-                >
-                  <option value="">请选择讲师</option>
-                  <option value="王老师">王老师</option>
-                  <option value="李老师">李老师</option>
-                  <option value="张老师">张老师</option>
-                  <option value="陈老师">陈老师</option>
-                </select>
+                  placeholder="请输入讲师姓名"
+                  className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-foreground">参与人数上限</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={formData.maxParticipants}
+                  onChange={(e) => setFormData({ ...formData, maxParticipants: Number(e.target.value) })}
+                  placeholder="请输入参与人数上限"
+                  className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
               </div>
             </div>
 

@@ -39,6 +39,7 @@ export const timeslots = pgTable("timeslots", {
 	startTime: varchar("start_time", { length: 5 }).notNull(),
 	endTime: varchar("end_time", { length: 5 }).notNull(),
 	teacher: varchar({ length: 50 }).notNull(),
+	maxParticipants: varchar("max_participants", { length: 10 }).default('1').notNull(),
 	status: varchar({ length: 20 }).default('available').notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),

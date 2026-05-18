@@ -9,6 +9,7 @@ export interface TimeSlot {
   end_time: string;
   teacher: string;
   status: 'available' | 'booked';
+  max_participants: number;
   created_at: string;
   updated_at: string | null;
 }
@@ -99,7 +100,7 @@ export async function addTimeSlot(slot: Omit<TimeSlot, 'created_at' | 'updated_a
   return data as TimeSlot;
 }
 
-export async function updateTimeSlot(id: string, updates: Partial<Pick<TimeSlot, 'date' | 'start_time' | 'end_time' | 'teacher' | 'status'>>): Promise<TimeSlot> {
+export async function updateTimeSlot(id: string, updates: Partial<Pick<TimeSlot, 'date' | 'start_time' | 'end_time' | 'teacher' | 'status' | 'max_participants'>>): Promise<TimeSlot> {
   const client = getClient();
   const { data, error } = await client.from('timeslots').update({ ...updates, updated_at: new Date().toISOString() }).eq('id', id).select().single();
   if (error) throw new Error(`更新时段失败: ${error.message}`);
@@ -155,6 +156,18 @@ export async function createBooking(params: {
     throw new Error('该手机号本月已有预约，每人每月仅限预约一次');
   }
 
+  // Check max participants limit
+  const { data: currentBookings } = await client
+    .from('bookings')
+    .select('id')
+    .eq('timeslot_id', slot.id)
+    .eq('status', 'confirmed');
+  const currentCount = currentBookings?.length || 0;
+  const maxParticipants = slot.max_participants || 1;
+  if (currentCount >= maxParticipants) {
+    throw new Error('该时段预约人数已满');
+  }
+
   const bookingId = `bk-${Date.now().toString(36)}`;
   const bookingNo = `TR${new Date().toISOString().slice(0, 10).replace(/-/g, '')}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
 
@@ -171,15 +184,17 @@ export async function createBooking(params: {
     status: 'confirmed',
   };
 
-  // Update timeslot status
-  const { error: slotError } = await client.from('timeslots').update({ status: 'booked', updated_at: new Date().toISOString() }).eq('id', slot.id);
+  // Update timeslot status: mark as 'booked' only when max participants reached
+  const newStatus = currentCount + 1 >= maxParticipants ? 'booked' : 'available';
+  const { error: slotError } = await client.from('timeslots').update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', slot.id);
   if (slotError) throw new Error(`更新时段状态失败: ${slotError.message}`);
 
   // Create booking
   const { data, error } = await client.from('bookings').insert(booking).select().single();
   if (error) {
     // Rollback timeslot status
-    await client.from('timeslots').update({ status: 'available', updated_at: new Date().toISOString() }).eq('id', slot.id);
+    const rollbackStatus = currentCount > 0 ? 'available' : 'available';
+    await client.from('timeslots').update({ status: rollbackStatus, updated_at: new Date().toISOString() }).eq('id', slot.id);
     throw new Error(`创建预约失败: ${error.message}`);
   }
 
@@ -253,6 +268,7 @@ export async function seedInitialData(): Promise<void> {
         end_time: ts.end,
         teacher: teachers[teacherIdx],
         status: 'available',
+        max_participants: 10,
       });
       slotIndex++;
     }

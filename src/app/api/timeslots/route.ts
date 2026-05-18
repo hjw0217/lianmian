@@ -9,6 +9,8 @@ function mapSlot(s: any) {
     startTime: s.start_time,
     endTime: s.end_time,
     teacher: s.teacher,
+    maxParticipants: Number(s.max_participants) || 1,
+    currentBookings: Number(s.current_bookings) || 0,
     status: s.status,
   };
 }
@@ -53,7 +55,7 @@ export async function POST(request: Request) {
 
     if (action === 'update') {
       const { updateTimeSlot } = await import('@/lib/store');
-      const { id, date, startTime, endTime, teacher, status } = body;
+      const { id, date, startTime, endTime, teacher, maxParticipants, status } = body;
       if (!id) {
         return NextResponse.json({ error: '缺少时段 ID' }, { status: 400 });
       }
@@ -61,7 +63,8 @@ export async function POST(request: Request) {
         ...(date && { date }),
         ...(startTime && { start_time: startTime }),
         ...(endTime && { end_time: endTime }),
-        ...(teacher && { teacher }),
+        ...(teacher !== undefined && { teacher }),
+        ...(maxParticipants !== undefined && { max_participants: maxParticipants }),
         ...(status && { status }),
       });
       return NextResponse.json({ success: true, data: mapSlot(slot) });
@@ -69,13 +72,18 @@ export async function POST(request: Request) {
 
     // 默认：新增时段
     const { addTimeSlot } = await import('@/lib/store');
-    const { date, startTime, endTime, teacher } = body;
-    if (!date || !startTime || !endTime || !teacher) {
-      return NextResponse.json({ error: '缺少必填字段（日期、开始时间、结束时间、讲师）' }, { status: 400 });
+    const { date, startTime, endTime, teacher, maxParticipants } = body;
+    if (!date || !startTime || !endTime) {
+      return NextResponse.json({ error: '缺少必填字段（日期、开始时间、结束时间）' }, { status: 400 });
     }
 
     const id = `ts-${Date.now().toString(36)}`;
-    const slot = await addTimeSlot({ id, date, start_time: startTime, end_time: endTime, teacher, status: 'available' });
+    const slot = await addTimeSlot({
+      id, date, start_time: startTime, end_time: endTime,
+      teacher: teacher || '',
+      max_participants: maxParticipants || 1,
+      status: 'available',
+    });
     return NextResponse.json({ success: true, data: mapSlot(slot) });
   } catch (err) {
     const message = err instanceof Error ? err.message : '操作失败';

@@ -19,6 +19,8 @@ interface TimeSlot {
   endTime: string;
   teacher: string;
   status: 'available' | 'booked' | 'expired';
+  maxParticipants: number;
+  bookingCount: number;
 }
 
 export default function HomePage() {
@@ -212,6 +214,9 @@ export default function HomePage() {
                         </span>
                         <span className="mt-0.5 text-xs text-muted-foreground">
                           {slot.teacher}
+                        </span>
+                        <span className="text-xs text-muted-foreground/70">
+                          {slot.bookingCount ?? 0}/{slot.maxParticipants ?? 0}人
                         </span>
                         {!isAvailable && (
                           <span className="mt-1 text-xs text-muted-foreground/60">
