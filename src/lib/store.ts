@@ -137,6 +137,11 @@ export async function createBooking(params: {
   if (!slot) throw new Error('时间段不存在');
   if (slot.status === 'booked') throw new Error('该时段已被预约');
 
+  // Check if timeslot has already started
+  const now = new Date();
+  const slotStart = new Date(`${slot.date}T${slot.start_time}:00`);
+  if (now >= slotStart) throw new Error('该时段已开始，无法预约');
+
   // Check monthly booking limit: one booking per phone per month
   const client = getClient();
   const [sy, sm] = slot.date.split('-').map(Number);

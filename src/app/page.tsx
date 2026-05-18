@@ -194,7 +194,9 @@ export default function HomePage() {
                   )}
                   {filteredSlots.map((slot) => {
                     const isSelected = selectedSlot === slot.id;
-                    const isAvailable = slot.status === 'available';
+                    const slotDateTime = new Date(`${slot.date}T${slot.startTime}:00`);
+                    const hasStarted = slotDateTime <= new Date();
+                    const isAvailable = slot.status === 'available' && !hasStarted;
                     return (
                       <button
                         key={slot.id}
@@ -220,7 +222,7 @@ export default function HomePage() {
                         </span>
                         {!isAvailable && (
                           <span className="mt-1 text-xs text-muted-foreground/60">
-                            {slot.status === 'booked' ? '已约满' : '已过期'}
+                            {hasStarted ? '已开始' : slot.status === 'booked' ? '已约满' : '已过期'}
                           </span>
                         )}
                         {isAvailable && !isSelected && (
