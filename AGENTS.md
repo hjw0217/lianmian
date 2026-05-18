@@ -15,8 +15,7 @@
 ```
 src/
 ├── app/
-│   ├── page.tsx              # 首页
-│   ├── booking/page.tsx      # 试听课预约页
+│   ├── page.tsx              # 首页（试听课预约页）
 │   ├── confirmation/page.tsx # 预约确认页
 │   ├── admin-login/page.tsx  # 管理员登录
 │   ├── admin/page.tsx        # 管理后台

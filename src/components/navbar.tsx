@@ -5,8 +5,7 @@ import { usePathname } from 'next/navigation';
 import { GraduationCap } from 'lucide-react';
 
 const navItems = [
-  { href: '/', label: '首页' },
-  { href: '/booking', label: '预约试听' },
+  { href: '/', label: '预约试听' },
   { href: '/admin', label: '管理后台' },
 ];
 
