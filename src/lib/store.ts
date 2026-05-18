@@ -25,7 +25,8 @@ export interface Booking {
 
 // Admin auth uses stateless signed tokens
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+const isProd = process.env.COZE_PROJECT_ENV === 'PROD';
+const DATA_DIR = isProd ? '/tmp/vocal-booking-data' : path.join(process.cwd(), 'data');
 const BOOKINGS_FILE = path.join(DATA_DIR, 'bookings.json');
 const TIMESLOTS_FILE = path.join(DATA_DIR, 'timeslots.json');
 
