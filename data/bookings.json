@@ -10,5 +10,17 @@
     "timeSlot": "09:00-10:00",
     "status": "confirmed",
     "createdAt": "2026-05-18T04:25:06.019Z"
+  },
+  {
+    "id": "bk-002",
+    "bookingNo": "TR20260518180",
+    "studentName": "测试",
+    "phone": "19522120217",
+    "requirement": "",
+    "teacher": "王老师",
+    "date": "2026-05-23",
+    "timeSlot": "14:00-15:00",
+    "status": "confirmed",
+    "createdAt": "2026-05-18T04:28:03.444Z"
   }
 ]

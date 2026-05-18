@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/navbar';
-import { CheckCircle2, Download, Home, Clock, User, Calendar, AlertCircle, Mic, Phone } from 'lucide-react';
+import { CheckCircle2, Home, Clock, User, Calendar, AlertCircle, Mic, Phone } from 'lucide-react';
 import Link from 'next/link';
 
 interface Booking {
@@ -41,49 +41,6 @@ export default function ConfirmationPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [searchParams]);
-
-  const handleDownload = () => {
-    if (!booking) return;
-
-    const content = `
-════════════════════════════════════
-       连麦课程预约确认卡
-════════════════════════════════════
-
-预约编号：${booking.bookingNo}
-状　　态：${booking.status === 'confirmed' ? '已确认' : booking.status}
-
-【讲师信息】
-讲　　师：${booking.teacher}
-
-【时间信息】
-日　　期：${booking.date}
-时　　段：${booking.timeSlot}
-
-【学员信息】
-姓　　名：${booking.studentName}
-电　　话：${booking.phone}
-${booking.requirement ? `课程需求：${booking.requirement}` : ''}
-
-预约时间：${new Date(booking.createdAt).toLocaleString('zh-CN')}
-
-════════════════════════════════════
-温馨提示：
-1. 请提前5分钟进入连麦房间测试设备
-2. 确保网络稳定、麦克风正常
-3. 试听连麦课完全免费
-4. 如需变更请联系客服
-════════════════════════════════════
-    `.trim();
-
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `预约确认_${booking.bookingNo}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
 
   if (loading) {
     return (
@@ -208,16 +165,9 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
 
         {/* Actions */}
         <div className="mx-auto mt-6 flex max-w-lg items-center justify-center gap-3 sm:mt-8 sm:gap-4">
-          <button
-            onClick={handleDownload}
-            className="flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:-translate-y-0.5 hover:shadow-float sm:px-6 sm:py-3"
-          >
-            <Download className="h-4 w-4" />
-            下载确认卡
-          </button>
           <Link
             href="/"
-            className="flex items-center gap-1.5 rounded-xl bg-muted px-4 py-2.5 text-sm font-semibold text-foreground transition-all hover:bg-surface-container-high sm:px-6 sm:py-3"
+            className="flex items-center gap-1.5 rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:-translate-y-0.5 hover:shadow-float sm:px-8 sm:py-3"
           >
             <Home className="h-4 w-4" />
             返回首页
