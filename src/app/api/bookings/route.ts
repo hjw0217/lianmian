@@ -60,6 +60,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: '未知操作' }, { status: 400 });
   } catch (err) {
     const message = err instanceof Error ? err.message : '操作失败';
-    return NextResponse.json({ error: message }, { status: 500 });
+    const isBusinessError = message.includes('已预约') || message.includes('仅限') || message.includes('不存在') || message.includes('已取消');
+    return NextResponse.json({ error: message }, { status: isBusinessError ? 400 : 500 });
   }
 }

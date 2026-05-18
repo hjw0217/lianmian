@@ -127,9 +127,29 @@ export async function createBooking(params: {
   requirement: string;
   timeSlotId: string;
 }): Promise<Booking> {
+  // Get timeslot first
   const slot = await getTimeSlotById(params.timeSlotId);
   if (!slot) throw new Error('时间段不存在');
   if (slot.status === 'booked') throw new Error('该时段已被预约');
+
+  // Check monthly booking limit: one booking per phone per month
+  const client = getClient();
+  const [sy, sm] = slot.date.split('-').map(Number);
+  const monthStart = `${sy}-${String(sm).padStart(2, '0')}-01`;
+  const nextMonth = sm === 12 ? `${sy + 1}-01-01` : `${sy}-${String(sm + 1).padStart(2, '0')}-01`;
+
+  const { data: existingBookings, error: checkError } = await client
+    .from('bookings')
+    .select('id')
+    .eq('phone', params.phone)
+    .eq('status', 'confirmed')
+    .gte('date', monthStart)
+    .lt('date', nextMonth);
+
+  if (checkError) throw new Error(`查询预约记录失败: ${checkError.message}`);
+  if (existingBookings && existingBookings.length > 0) {
+    throw new Error('该手机号本月已有预约，每人每月仅限预约一次');
+  }
 
   const bookingId = `bk-${Date.now().toString(36)}`;
   const bookingNo = `TR${new Date().toISOString().slice(0, 10).replace(/-/g, '')}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
@@ -146,8 +166,6 @@ export async function createBooking(params: {
     timeslot_id: slot.id,
     status: 'confirmed',
   };
-
-  const client = getClient();
 
   // Update timeslot status
   const { error: slotError } = await client.from('timeslots').update({ status: 'booked', updated_at: new Date().toISOString() }).eq('id', slot.id);
