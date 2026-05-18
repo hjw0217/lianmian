@@ -13,7 +13,7 @@
     "startTime": "09:00",
     "endTime": "10:00",
     "teacher": "张老师",
-    "status": "available"
+    "status": "booked"
   },
   {
     "id": "ts-010",

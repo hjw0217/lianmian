@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/navbar';
 import { CheckCircle2, Home, Clock, User, Calendar, AlertCircle, Mic, Phone } from 'lucide-react';
@@ -19,7 +19,7 @@ interface Booking {
   createdAt: string;
 }
 
-export default function ConfirmationPage() {
+function ConfirmationContent() {
   const searchParams = useSearchParams();
   const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
@@ -200,5 +200,22 @@ export default function ConfirmationPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function ConfirmationPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background">
+          <Navbar />
+          <div className="flex min-h-[60vh] items-center justify-center">
+            <div className="text-sm text-muted-foreground">加载中...</div>
+          </div>
+        </div>
+      }
+    >
+      <ConfirmationContent />
+    </Suspense>
   );
 }
