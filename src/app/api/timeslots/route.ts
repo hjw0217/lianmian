@@ -19,11 +19,11 @@ export async function POST(request: NextRequest) {
     }
 
     if (action === 'add') {
-      const { date, startTime, endTime, course, teacher, classroom } = data;
-      if (!date || !startTime || !endTime || !course || !teacher || !classroom) {
+      const { date, startTime, endTime, teacher } = data;
+      if (!date || !startTime || !endTime || !teacher) {
         return NextResponse.json({ error: '请填写完整的时段信息' }, { status: 400 });
       }
-      const slot = addTimeSlot({ date, startTime, endTime, course, teacher, classroom, status: 'available' });
+      const slot = addTimeSlot({ date, startTime, endTime, teacher, status: 'available' });
       return NextResponse.json({ success: true, data: slot });
     }
 

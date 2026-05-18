@@ -6,9 +6,7 @@ export interface TimeSlot {
   date: string;       // YYYY-MM-DD
   startTime: string;  // HH:mm
   endTime: string;    // HH:mm
-  course: string;
   teacher: string;
-  classroom: string;  // 连麦房间号
   status: 'available' | 'booked' | 'expired';
 }
 
@@ -18,9 +16,7 @@ export interface Booking {
   studentName: string;
   phone: string;
   requirement: string;
-  course: string;
   teacher: string;
-  classroom: string;
   date: string;
   timeSlot: string;
   status: 'confirmed' | 'pending' | 'cancelled';
@@ -58,9 +54,7 @@ function writeJSON<T>(filePath: string, data: T) {
 
 function getDefaultTimeSlots(): TimeSlot[] {
   const slots: TimeSlot[] = [];
-  const courses = ['声乐基础课', '民歌演唱课', '美声唱法课', '通俗流行课'];
   const teachers = ['王老师', '李老师', '张老师', '陈老师'];
-  const classrooms = ['麦房A', '麦房B', '麦房C', '麦房D'];
   const times = ['09:00-10:00', '10:00-11:00', '11:00-12:00', '14:00-15:00', '15:00-16:00', '16:00-17:00'];
 
   const today = new Date();
@@ -71,18 +65,15 @@ function getDefaultTimeSlots(): TimeSlot[] {
     const dateStr = date.toISOString().slice(0, 10);
     const dayOfWeek = date.getDay();
 
-    // Each day has 3-5 slots for different courses
     const slotCount = dayOfWeek === 0 || dayOfWeek === 6 ? 5 : 4;
     for (let t = 0; t < slotCount; t++) {
-      const cIdx = (d + t) % courses.length;
+      const tIdx = (d + t) % teachers.length;
       slots.push({
         id: `ts-${String(id++).padStart(3, '0')}`,
         date: dateStr,
         startTime: times[t].split('-')[0],
         endTime: times[t].split('-')[1],
-        course: courses[cIdx],
-        teacher: teachers[cIdx],
-        classroom: classrooms[cIdx],
+        teacher: teachers[tIdx],
         status: t === 0 && d === 1 ? 'booked' : (d === 0 && t > 3 ? 'expired' : 'available'),
       });
     }
@@ -160,9 +151,7 @@ export function createBooking(data: {
     studentName: data.studentName,
     phone: data.phone,
     requirement: data.requirement,
-    course: slot.course,
     teacher: slot.teacher,
-    classroom: slot.classroom,
     date: slot.date,
     timeSlot: `${slot.startTime}-${slot.endTime}`,
     status: 'confirmed',
@@ -190,7 +179,7 @@ export function cancelBooking(id: string): Booking | null {
   const booking = bookings[idx];
   const slots = getTimeSlots();
   const slotIdx = slots.findIndex(
-    s => s.date === booking.date && s.startTime === booking.timeSlot.split('-')[0] && s.course === booking.course
+    s => s.date === booking.date && s.startTime === booking.timeSlot.split('-')[0] && s.teacher === booking.teacher
   );
   if (slotIdx !== -1) {
     slots[slotIdx].status = 'available';
@@ -241,54 +230,3 @@ export function verifyAdmin(token: string): boolean {
 export function adminLogout(_token: string) {
   // Stateless token, no cleanup needed
 }
-
-// ==================== Courses ====================
-
-export interface Course {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-  tag: string;
-  description: string;
-  teacher: string;
-}
-
-export const courses: Course[] = [
-  {
-    id: 'vocal-basics',
-    name: '声乐基础课',
-    icon: 'music',
-    color: 'accent-yellow',
-    tag: '热门',
-    description: '从呼吸法到发声技巧，系统学习声乐基础，轻松开口唱',
-    teacher: '王老师',
-  },
-  {
-    id: 'folk-singing',
-    name: '民歌演唱课',
-    icon: 'music',
-    color: 'accent-pink',
-    tag: '新课',
-    description: '经典民歌逐句教学，感受民族声乐的独特韵味',
-    teacher: '李老师',
-  },
-  {
-    id: 'bel-canto',
-    name: '美声唱法课',
-    icon: 'music',
-    color: 'accent-green',
-    tag: '热门',
-    description: '科学发声与共鸣训练，掌握美声唱法的核心要领',
-    teacher: '张老师',
-  },
-  {
-    id: 'pop-singing',
-    name: '通俗流行课',
-    icon: 'message-circle',
-    color: 'accent-yellow',
-    tag: '推荐',
-    description: '流行歌曲演唱技巧，情感表达与舞台表现力全面提升',
-    teacher: '陈老师',
-  },
-];

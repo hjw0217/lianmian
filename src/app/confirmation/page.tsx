@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/navbar';
-import { CheckCircle2, Download, Home, Clock, User, Phone, Calendar, FileText, AlertCircle, Mic } from 'lucide-react';
+import { CheckCircle2, Download, Home, Clock, User, Calendar, AlertCircle, Mic, Phone } from 'lucide-react';
 import Link from 'next/link';
 
 interface Booking {
@@ -12,9 +12,7 @@ interface Booking {
   studentName: string;
   phone: string;
   requirement: string;
-  course: string;
   teacher: string;
-  classroom: string;
   date: string;
   timeSlot: string;
   status: string;
@@ -48,17 +46,15 @@ export default function ConfirmationPage() {
     if (!booking) return;
 
     const content = `
-═══════════════════════════════════
-        连麦课程预约确认卡
-═══════════════════════════════════
+════════════════════════════════════
+       连麦课程预约确认卡
+════════════════════════════════════
 
 预约编号：${booking.bookingNo}
 状　　态：${booking.status === 'confirmed' ? '已确认' : booking.status}
 
-【课程信息】
-课　　程：${booking.course}
+【讲师信息】
 讲　　师：${booking.teacher}
-连麦房间：${booking.classroom}
 
 【时间信息】
 日　　期：${booking.date}
@@ -71,13 +67,13 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
 
 预约时间：${new Date(booking.createdAt).toLocaleString('zh-CN')}
 
-═══════════════════════════════════
+════════════════════════════════════
 温馨提示：
 1. 请提前5分钟进入连麦房间测试设备
 2. 确保网络稳定、麦克风正常
 3. 试听连麦课完全免费
 4. 如需变更请联系客服
-═══════════════════════════════════
+════════════════════════════════════
     `.trim();
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -137,25 +133,15 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
           <div className="h-2 bg-gradient-to-r from-primary via-accent-yellow to-accent-pink" />
 
           <div className="space-y-4 p-4 sm:space-y-5 sm:p-6">
-            {/* Course Info */}
+            {/* Teacher Info */}
             <div>
               <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
-                <FileText className="h-4 w-4 text-primary" />
-                课程信息
+                <Mic className="h-4 w-4 text-primary" />
+                讲师信息
               </h2>
-              <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3">
-                <div className="rounded-lg bg-muted px-2.5 py-2 sm:px-3">
-                  <div className="text-[10px] text-muted-foreground sm:text-xs">课程</div>
-                  <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.course}</div>
-                </div>
-                <div className="rounded-lg bg-muted px-2.5 py-2 sm:px-3">
-                  <div className="text-[10px] text-muted-foreground sm:text-xs">讲师</div>
-                  <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.teacher}</div>
-                </div>
-                <div className="rounded-lg bg-muted px-2.5 py-2 sm:px-3">
-                  <div className="text-[10px] text-muted-foreground sm:text-xs">连麦房间</div>
-                  <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.classroom}</div>
-                </div>
+              <div className="mt-3 rounded-lg bg-muted px-3 py-2.5 sm:px-4 sm:py-3">
+                <div className="text-xs text-muted-foreground sm:text-sm">讲师</div>
+                <div className="text-sm font-semibold text-foreground sm:text-base">{booking.teacher}</div>
               </div>
             </div>
 

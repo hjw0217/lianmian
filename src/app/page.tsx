@@ -17,9 +17,7 @@ interface TimeSlot {
   date: string;
   startTime: string;
   endTime: string;
-  course: string;
   teacher: string;
-  classroom: string;
   status: 'available' | 'booked' | 'expired';
 }
 
@@ -213,7 +211,7 @@ export default function HomePage() {
                           {slot.startTime}-{slot.endTime}
                         </span>
                         <span className="mt-0.5 text-xs text-muted-foreground">
-                          {slot.course} · {slot.teacher}
+                          {slot.teacher}
                         </span>
                         {!isAvailable && (
                           <span className="mt-1 text-xs text-muted-foreground/60">
@@ -272,7 +270,7 @@ export default function HomePage() {
                     {selectedSlotInfo.date} {selectedSlotInfo.startTime}-{selectedSlotInfo.endTime}
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    连麦房间：{selectedSlotInfo.classroom}
+                    授课讲师：{selectedSlotInfo.teacher}
                   </div>
                 </div>
               ) : (

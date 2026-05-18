@@ -24,9 +24,7 @@ interface TimeSlot {
   date: string;
   startTime: string;
   endTime: string;
-  course: string;
   teacher: string;
-  classroom: string;
   status: 'available' | 'booked' | 'expired';
 }
 
@@ -36,9 +34,7 @@ interface Booking {
   studentName: string;
   phone: string;
   requirement: string;
-  course: string;
   teacher: string;
-  classroom: string;
   date: string;
   timeSlot: string;
   status: 'confirmed' | 'pending' | 'cancelled';
@@ -61,9 +57,7 @@ export default function AdminPage() {
     date: '',
     startTime: '',
     endTime: '',
-    course: '',
     teacher: '',
-    classroom: '',
   });
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [copiedSlotId, setCopiedSlotId] = useState<string | null>(null);
@@ -78,7 +72,7 @@ export default function AdminPage() {
       return;
     }
     const lines = [
-      `${slot.course} ${slot.date} ${slot.startTime}-${slot.endTime} ${slot.classroom}`,
+      `${slot.teacher} ${slot.date} ${slot.startTime}-${slot.endTime}`,
       ...slotBookings.map((b, i) => `${i + 1}. ${b.studentName} ${b.phone}`),
     ];
     const text = lines.join('\n');
@@ -157,7 +151,7 @@ export default function AdminPage() {
   // TimeSlot CRUD
   const openAddModal = () => {
     setEditingSlot(null);
-    setFormData({ date: '', startTime: '', endTime: '', course: '', teacher: '', classroom: '' });
+    setFormData({ date: '', startTime: '', endTime: '', teacher: '' });
     setShowModal(true);
   };
 
@@ -167,15 +161,13 @@ export default function AdminPage() {
       date: slot.date,
       startTime: slot.startTime,
       endTime: slot.endTime,
-      course: slot.course,
       teacher: slot.teacher,
-      classroom: slot.classroom,
     });
     setShowModal(true);
   };
 
   const handleSaveSlot = async () => {
-    if (!formData.date || !formData.startTime || !formData.endTime || !formData.course || !formData.teacher || !formData.classroom) {
+    if (!formData.date || !formData.startTime || !formData.endTime || !formData.teacher) {
       showMessage('error', '请填写完整信息');
       return;
     }
@@ -423,10 +415,9 @@ export default function AdminPage() {
                     <div className="flex items-start justify-between">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <div className="text-sm font-semibold text-foreground">{slot.course}</div>
+                          <div className="text-sm font-semibold text-foreground">{slot.teacher}</div>
                           {statusBadge(slot.status)}
                         </div>
-                        <div className="text-xs text-muted-foreground">{slot.teacher} · {slot.classroom}</div>
                         <div className="text-xs text-muted-foreground">
                           {slot.date} {slot.startTime}-{slot.endTime}
                         </div>
@@ -480,9 +471,7 @@ export default function AdminPage() {
                     <tr className="border-b border-border/20 bg-muted/50">
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">日期</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">时间段</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">课程</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">讲师</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">连麦房间</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">状态</th>
                       <th className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground">预约人数</th>
                       <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">操作</th>
@@ -498,9 +487,7 @@ export default function AdminPage() {
                         >
                           <td className="px-4 py-3 text-sm text-foreground">{slot.date}</td>
                           <td className="px-4 py-3 text-sm text-foreground">{slot.startTime}-{slot.endTime}</td>
-                          <td className="px-4 py-3 text-sm text-foreground">{slot.course}</td>
                           <td className="px-4 py-3 text-sm text-foreground">{slot.teacher}</td>
-                          <td className="px-4 py-3 text-sm text-foreground">{slot.classroom}</td>
                           <td className="px-4 py-3">{statusBadge(slot.status)}</td>
                           <td className="px-4 py-3 text-center text-sm text-foreground">
                             {bookingCount > 0 ? (
@@ -543,7 +530,7 @@ export default function AdminPage() {
                     })}
                     {timeSlots.length === 0 && (
                       <tr>
-                        <td colSpan={8} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                        <td colSpan={6} className="px-4 py-8 text-center text-sm text-muted-foreground">
                           暂无时段数据
                         </td>
                       </tr>
@@ -568,7 +555,7 @@ export default function AdminPage() {
                     <div className="space-y-1">
                       <div className="text-sm font-semibold text-foreground">#{b.bookingNo}</div>
                       <div className="text-xs text-muted-foreground">{b.studentName} · {b.phone}</div>
-                      <div className="text-xs text-muted-foreground">{b.course} · {b.teacher}</div>
+                      <div className="text-xs text-muted-foreground">{b.teacher}</div>
                       <div className="text-xs text-muted-foreground">{b.date} {b.timeSlot}</div>
                     </div>
                     <div>{statusBadge(b.status)}</div>
@@ -605,7 +592,7 @@ export default function AdminPage() {
                     <tr className="border-b border-border/20 bg-muted/50">
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">预约编号</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">学员</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">课程</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">讲师</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">预约时间</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">状态</th>
                       <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">操作</th>
@@ -619,7 +606,7 @@ export default function AdminPage() {
                       >
                         <td className="px-4 py-3 text-sm font-medium text-foreground">#{b.bookingNo}</td>
                         <td className="px-4 py-3 text-sm text-foreground">{b.studentName}</td>
-                        <td className="px-4 py-3 text-sm text-foreground">{b.course}</td>
+                        <td className="px-4 py-3 text-sm text-foreground">{b.teacher}</td>
                         <td className="px-4 py-3 text-sm text-foreground">
                           {b.date} {b.timeSlot}
                         </td>
@@ -710,20 +697,6 @@ export default function AdminPage() {
                 </div>
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">课程</label>
-                <select
-                  value={formData.course}
-                  onChange={(e) => setFormData({ ...formData, course: e.target.value })}
-                  className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-                >
-                  <option value="">请选择课程</option>
-                  <option value="声乐基础课">声乐基础课</option>
-                  <option value="民歌演唱课">民歌演唱课</option>
-                  <option value="美声唱法课">美声唱法课</option>
-                  <option value="通俗流行课">通俗流行课</option>
-                </select>
-              </div>
-              <div>
                 <label className="mb-1.5 block text-sm font-medium text-foreground">讲师</label>
                 <select
                   value={formData.teacher}
@@ -735,20 +708,6 @@ export default function AdminPage() {
                   <option value="李老师">李老师</option>
                   <option value="张老师">张老师</option>
                   <option value="陈老师">陈老师</option>
-                </select>
-              </div>
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">连麦房间</label>
-                <select
-                  value={formData.classroom}
-                  onChange={(e) => setFormData({ ...formData, classroom: e.target.value })}
-                  className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-                >
-                  <option value="">请选择连麦房间</option>
-                  <option value="麦房A">麦房A</option>
-                  <option value="麦房B">麦房B</option>
-                  <option value="麦房C">麦房C</option>
-                  <option value="麦房D">麦房D</option>
                 </select>
               </div>
             </div>
