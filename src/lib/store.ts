@@ -108,6 +108,10 @@ export async function updateTimeSlot(id: string, updates: Partial<Pick<TimeSlot,
 
 export async function deleteTimeSlot(id: string): Promise<void> {
   const client = getClient();
+  // 先删除关联的预约记录
+  const { error: bookingError } = await client.from('bookings').delete().eq('timeslot_id', id);
+  if (bookingError) throw new Error(`删除关联预约失败: ${bookingError.message}`);
+  // 再删除时段
   const { error } = await client.from('timeslots').delete().eq('id', id);
   if (error) throw new Error(`删除时段失败: ${error.message}`);
 }
