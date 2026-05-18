@@ -15,6 +15,8 @@ import {
   Ban,
   Users,
   Mic,
+  ClipboardCopy,
+  Check,
 } from 'lucide-react';
 
 interface TimeSlot {
@@ -64,6 +66,40 @@ export default function AdminPage() {
     classroom: '',
   });
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [copiedSlotId, setCopiedSlotId] = useState<string | null>(null);
+
+  // Copy roster for a timeslot
+  const handleCopyRoster = (slot: TimeSlot) => {
+    const slotBookings = bookings.filter(
+      (b) => b.date === slot.date && b.timeSlot === `${slot.startTime}-${slot.endTime}` && b.status !== 'cancelled'
+    );
+    if (slotBookings.length === 0) {
+      showMessage('error', '该时段暂无预约人员');
+      return;
+    }
+    const lines = [
+      `${slot.course} ${slot.date} ${slot.startTime}-${slot.endTime} ${slot.classroom}`,
+      ...slotBookings.map((b, i) => `${i + 1}. ${b.studentName} ${b.phone}`),
+    ];
+    const text = lines.join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedSlotId(slot.id);
+      showMessage('success', `已复制 ${slotBookings.length} 人名单`);
+      setTimeout(() => setCopiedSlotId(null), 2000);
+    }).catch(() => {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      setCopiedSlotId(slot.id);
+      showMessage('success', `已复制 ${slotBookings.length} 人名单`);
+      setTimeout(() => setCopiedSlotId(null), 2000);
+    });
+  };
 
   // Check auth on mount
   useEffect(() => {
@@ -243,6 +279,13 @@ export default function AdminPage() {
     );
   };
 
+  // Get booking count for a timeslot
+  const getSlotBookingCount = (slot: TimeSlot) => {
+    return bookings.filter(
+      (b) => b.date === slot.date && b.timeSlot === `${slot.startTime}-${slot.endTime}` && b.status !== 'cancelled'
+    ).length;
+  };
+
   // Stats
   const todayStr = new Date().toISOString().slice(0, 10);
   const todayBookings = bookings.filter((b) => b.date === todayStr && b.status !== 'cancelled').length;
@@ -373,38 +416,57 @@ export default function AdminPage() {
 
             {/* Mobile: Card list */}
             <div className="mt-3 space-y-2 sm:hidden">
-              {timeSlots.map((slot) => (
-                <div key={slot.id} className="rounded-xl bg-card p-4 shadow-card">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <div className="text-sm font-semibold text-foreground">{slot.course}</div>
-                      <div className="text-xs text-muted-foreground">{slot.teacher} · {slot.classroom}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {slot.date} {slot.startTime}-{slot.endTime}
+              {timeSlots.map((slot) => {
+                const bookingCount = getSlotBookingCount(slot);
+                return (
+                  <div key={slot.id} className="rounded-xl bg-card p-4 shadow-card">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="text-sm font-semibold text-foreground">{slot.course}</div>
+                          {statusBadge(slot.status)}
+                        </div>
+                        <div className="text-xs text-muted-foreground">{slot.teacher} · {slot.classroom}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {slot.date} {slot.startTime}-{slot.endTime}
+                        </div>
+                        {bookingCount > 0 && (
+                          <div className="text-xs text-primary">
+                            已预约 {bookingCount} 人
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {statusBadge(slot.status)}
+                    <div className="mt-3 flex justify-end gap-1 border-t border-border/10 pt-3">
+                      <button
+                        onClick={() => handleCopyRoster(slot)}
+                        className={`flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors ${
+                          copiedSlotId === slot.id
+                            ? 'bg-accent-green/10 text-accent-green'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        }`}
+                      >
+                        {copiedSlotId === slot.id ? <Check className="h-3 w-3" /> : <ClipboardCopy className="h-3 w-3" />}
+                        {copiedSlotId === slot.id ? '已复制' : '复制名单'}
+                      </button>
+                      <button
+                        onClick={() => openEditModal(slot)}
+                        className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        <Pencil className="h-3 w-3" />
+                        编辑
+                      </button>
+                      <button
+                        onClick={() => handleDeleteSlot(slot.id)}
+                        className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        删除
+                      </button>
                     </div>
                   </div>
-                  <div className="mt-3 flex justify-end gap-1 border-t border-border/10 pt-3">
-                    <button
-                      onClick={() => openEditModal(slot)}
-                      className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    >
-                      <Pencil className="h-3 w-3" />
-                      编辑
-                    </button>
-                    <button
-                      onClick={() => handleDeleteSlot(slot.id)}
-                      className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                      删除
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
               {timeSlots.length === 0 && (
                 <div className="py-8 text-center text-sm text-muted-foreground">暂无时段数据</div>
               )}
@@ -422,44 +484,66 @@ export default function AdminPage() {
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">讲师</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">连麦房间</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">状态</th>
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground">预约人数</th>
                       <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">操作</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {timeSlots.map((slot, idx) => (
-                      <tr
-                        key={slot.id}
-                        className={`border-b border-border/10 transition-colors hover:bg-muted/30 ${idx % 2 === 0 ? '' : 'bg-muted/20'}`}
-                      >
-                        <td className="px-4 py-3 text-sm text-foreground">{slot.date}</td>
-                        <td className="px-4 py-3 text-sm text-foreground">{slot.startTime}-{slot.endTime}</td>
-                        <td className="px-4 py-3 text-sm text-foreground">{slot.course}</td>
-                        <td className="px-4 py-3 text-sm text-foreground">{slot.teacher}</td>
-                        <td className="px-4 py-3 text-sm text-foreground">{slot.classroom}</td>
-                        <td className="px-4 py-3">{statusBadge(slot.status)}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center justify-end gap-1">
-                            <button
-                              onClick={() => openEditModal(slot)}
-                              className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                              title="编辑"
-                            >
-                              <Pencil className="h-3.5 w-3.5" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteSlot(slot.id)}
-                              className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-                              title="删除"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                    {timeSlots.map((slot, idx) => {
+                      const bookingCount = getSlotBookingCount(slot);
+                      return (
+                        <tr
+                          key={slot.id}
+                          className={`border-b border-border/10 transition-colors hover:bg-muted/30 ${idx % 2 === 0 ? '' : 'bg-muted/20'}`}
+                        >
+                          <td className="px-4 py-3 text-sm text-foreground">{slot.date}</td>
+                          <td className="px-4 py-3 text-sm text-foreground">{slot.startTime}-{slot.endTime}</td>
+                          <td className="px-4 py-3 text-sm text-foreground">{slot.course}</td>
+                          <td className="px-4 py-3 text-sm text-foreground">{slot.teacher}</td>
+                          <td className="px-4 py-3 text-sm text-foreground">{slot.classroom}</td>
+                          <td className="px-4 py-3">{statusBadge(slot.status)}</td>
+                          <td className="px-4 py-3 text-center text-sm text-foreground">
+                            {bookingCount > 0 ? (
+                              <span className="font-medium text-primary">{bookingCount} 人</span>
+                            ) : (
+                              <span className="text-muted-foreground">-</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center justify-end gap-1">
+                              <button
+                                onClick={() => handleCopyRoster(slot)}
+                                className={`rounded-md p-1.5 transition-colors ${
+                                  copiedSlotId === slot.id
+                                    ? 'bg-accent-green/10 text-accent-green'
+                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                }`}
+                                title="复制名单"
+                              >
+                                {copiedSlotId === slot.id ? <Check className="h-3.5 w-3.5" /> : <ClipboardCopy className="h-3.5 w-3.5" />}
+                              </button>
+                              <button
+                                onClick={() => openEditModal(slot)}
+                                className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                                title="编辑"
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteSlot(slot.id)}
+                                className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                                title="删除"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                     {timeSlots.length === 0 && (
                       <tr>
-                        <td colSpan={7} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                        <td colSpan={8} className="px-4 py-8 text-center text-sm text-muted-foreground">
                           暂无时段数据
                         </td>
                       </tr>

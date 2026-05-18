@@ -1,35 +1,5 @@
 [
   {
-    "id": "ts-001",
-    "date": "2026-05-18",
-    "startTime": "09:00",
-    "endTime": "10:00",
-    "course": "声乐基础课",
-    "teacher": "王老师",
-    "classroom": "麦房A",
-    "status": "booked"
-  },
-  {
-    "id": "ts-002",
-    "date": "2026-05-18",
-    "startTime": "10:00",
-    "endTime": "11:00",
-    "course": "民歌演唱课",
-    "teacher": "李老师",
-    "classroom": "麦房B",
-    "status": "available"
-  },
-  {
-    "id": "ts-003",
-    "date": "2026-05-18",
-    "startTime": "11:00",
-    "endTime": "12:00",
-    "course": "美声唱法课",
-    "teacher": "张老师",
-    "classroom": "麦房C",
-    "status": "booked"
-  },
-  {
     "id": "ts-004",
     "date": "2026-05-18",
     "startTime": "14:00",
@@ -57,7 +27,7 @@
     "course": "美声唱法课",
     "teacher": "张老师",
     "classroom": "麦房C",
-    "status": "available"
+    "status": "booked"
   },
   {
     "id": "ts-007",
