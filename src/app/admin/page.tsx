@@ -15,6 +15,7 @@ import {
   Eye,
   Ban,
   Users,
+  Mic,
 } from 'lucide-react';
 
 interface TimeSlot {
@@ -33,7 +34,6 @@ interface Booking {
   bookingNo: string;
   studentName: string;
   phone: string;
-  age: string;
   requirement: string;
   course: string;
   teacher: string;
@@ -262,8 +262,8 @@ export default function AdminPage() {
       <header className="sticky top-0 z-40 bg-card shadow-card">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-2">
-            <GraduationCap className="h-6 w-6 text-primary" />
-            <span className="text-lg font-bold text-foreground">课程预约</span>
+            <Mic className="h-6 w-6 text-primary" />
+            <span className="text-lg font-bold text-foreground">声乐连麦</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
@@ -313,7 +313,7 @@ export default function AdminPage() {
             </div>
             <div>
               <div className="text-2xl font-bold text-foreground">{totalBookings}</div>
-              <div className="text-xs text-muted-foreground">累计试听</div>
+              <div className="text-xs text-muted-foreground">累计连麦</div>
             </div>
           </div>
         </div>
@@ -379,7 +379,7 @@ export default function AdminPage() {
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">时间段</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">课程</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">讲师</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">教室</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">连麦房间</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">状态</th>
                       <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">操作</th>
                     </tr>
@@ -553,10 +553,10 @@ export default function AdminPage() {
                   className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                 >
                   <option value="">请选择课程</option>
-                  <option value="钢琴启蒙课">钢琴启蒙课</option>
-                  <option value="美术创意课">美术创意课</option>
-                  <option value="编程思维课">编程思维课</option>
-                  <option value="英语口语课">英语口语课</option>
+                  <option value="声乐基础课">声乐基础课</option>
+                  <option value="民歌演唱课">民歌演唱课</option>
+                  <option value="美声唱法课">美声唱法课</option>
+                  <option value="通俗流行课">通俗流行课</option>
                 </select>
               </div>
               <div>
@@ -580,11 +580,11 @@ export default function AdminPage() {
                   onChange={(e) => setFormData({ ...formData, classroom: e.target.value })}
                   className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                 >
-                  <option value="">请选择教室</option>
-                  <option value="A301">A301</option>
-                  <option value="B205">B205</option>
-                  <option value="C102">C102</option>
-                  <option value="D408">D408</option>
+                  <option value="">请选择连麦房间</option>
+                  <option value="麦房A">麦房A</option>
+                  <option value="麦房B">麦房B</option>
+                  <option value="麦房C">麦房C</option>
+                  <option value="麦房D">麦房D</option>
                 </select>
               </div>
             </div>

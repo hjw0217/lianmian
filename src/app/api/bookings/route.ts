@@ -12,11 +12,11 @@ export async function POST(request: NextRequest) {
     const { action, token, ...data } = body;
 
     if (action === 'create') {
-      const { studentName, phone, age, requirement, timeSlotId } = data;
-      if (!studentName || !phone || !age || !timeSlotId) {
+      const { studentName, phone, requirement, timeSlotId } = data;
+      if (!studentName || !phone || !timeSlotId) {
         return NextResponse.json({ error: '请填写完整的预约信息' }, { status: 400 });
       }
-      const result = createBooking({ studentName, phone, age, requirement: requirement || '', timeSlotId });
+      const result = createBooking({ studentName, phone, requirement: requirement || '', timeSlotId });
       if ('error' in result) {
         return NextResponse.json({ error: result.error }, { status: 400 });
       }

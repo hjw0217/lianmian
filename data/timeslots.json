@@ -4,29 +4,29 @@
     "date": "2026-05-18",
     "startTime": "09:00",
     "endTime": "10:00",
-    "course": "钢琴启蒙课",
+    "course": "声乐基础课",
     "teacher": "王老师",
-    "classroom": "A301",
-    "status": "available"
+    "classroom": "麦房A",
+    "status": "booked"
   },
   {
     "id": "ts-002",
     "date": "2026-05-18",
     "startTime": "10:00",
     "endTime": "11:00",
-    "course": "美术创意课",
+    "course": "民歌演唱课",
     "teacher": "李老师",
-    "classroom": "B205",
-    "status": "booked"
+    "classroom": "麦房B",
+    "status": "available"
   },
   {
     "id": "ts-003",
     "date": "2026-05-18",
     "startTime": "11:00",
     "endTime": "12:00",
-    "course": "编程思维课",
+    "course": "美声唱法课",
     "teacher": "张老师",
-    "classroom": "C102",
+    "classroom": "麦房C",
     "status": "available"
   },
   {
@@ -34,9 +34,9 @@
     "date": "2026-05-18",
     "startTime": "14:00",
     "endTime": "15:00",
-    "course": "英语口语课",
+    "course": "通俗流行课",
     "teacher": "陈老师",
-    "classroom": "D408",
+    "classroom": "麦房D",
     "status": "available"
   },
   {
@@ -44,9 +44,9 @@
     "date": "2026-05-19",
     "startTime": "09:00",
     "endTime": "10:00",
-    "course": "美术创意课",
+    "course": "民歌演唱课",
     "teacher": "李老师",
-    "classroom": "B205",
+    "classroom": "麦房B",
     "status": "booked"
   },
   {
@@ -54,9 +54,9 @@
     "date": "2026-05-19",
     "startTime": "10:00",
     "endTime": "11:00",
-    "course": "编程思维课",
+    "course": "美声唱法课",
     "teacher": "张老师",
-    "classroom": "C102",
+    "classroom": "麦房C",
     "status": "available"
   },
   {
@@ -64,9 +64,9 @@
     "date": "2026-05-19",
     "startTime": "11:00",
     "endTime": "12:00",
-    "course": "英语口语课",
+    "course": "通俗流行课",
     "teacher": "陈老师",
-    "classroom": "D408",
+    "classroom": "麦房D",
     "status": "available"
   },
   {
@@ -74,9 +74,9 @@
     "date": "2026-05-19",
     "startTime": "14:00",
     "endTime": "15:00",
-    "course": "钢琴启蒙课",
+    "course": "声乐基础课",
     "teacher": "王老师",
-    "classroom": "A301",
+    "classroom": "麦房A",
     "status": "available"
   },
   {
@@ -84,9 +84,9 @@
     "date": "2026-05-20",
     "startTime": "09:00",
     "endTime": "10:00",
-    "course": "编程思维课",
+    "course": "美声唱法课",
     "teacher": "张老师",
-    "classroom": "C102",
+    "classroom": "麦房C",
     "status": "available"
   },
   {
@@ -94,9 +94,9 @@
     "date": "2026-05-20",
     "startTime": "10:00",
     "endTime": "11:00",
-    "course": "英语口语课",
+    "course": "通俗流行课",
     "teacher": "陈老师",
-    "classroom": "D408",
+    "classroom": "麦房D",
     "status": "available"
   },
   {
@@ -104,9 +104,9 @@
     "date": "2026-05-20",
     "startTime": "11:00",
     "endTime": "12:00",
-    "course": "钢琴启蒙课",
+    "course": "声乐基础课",
     "teacher": "王老师",
-    "classroom": "A301",
+    "classroom": "麦房A",
     "status": "available"
   },
   {
@@ -114,9 +114,9 @@
     "date": "2026-05-20",
     "startTime": "14:00",
     "endTime": "15:00",
-    "course": "美术创意课",
+    "course": "民歌演唱课",
     "teacher": "李老师",
-    "classroom": "B205",
+    "classroom": "麦房B",
     "status": "available"
   },
   {
@@ -124,9 +124,9 @@
     "date": "2026-05-21",
     "startTime": "09:00",
     "endTime": "10:00",
-    "course": "英语口语课",
+    "course": "通俗流行课",
     "teacher": "陈老师",
-    "classroom": "D408",
+    "classroom": "麦房D",
     "status": "available"
   },
   {
@@ -134,9 +134,9 @@
     "date": "2026-05-21",
     "startTime": "10:00",
     "endTime": "11:00",
-    "course": "钢琴启蒙课",
+    "course": "声乐基础课",
     "teacher": "王老师",
-    "classroom": "A301",
+    "classroom": "麦房A",
     "status": "available"
   },
   {
@@ -144,9 +144,9 @@
     "date": "2026-05-21",
     "startTime": "11:00",
     "endTime": "12:00",
-    "course": "美术创意课",
+    "course": "民歌演唱课",
     "teacher": "李老师",
-    "classroom": "B205",
+    "classroom": "麦房B",
     "status": "available"
   },
   {
@@ -154,9 +154,9 @@
     "date": "2026-05-21",
     "startTime": "14:00",
     "endTime": "15:00",
-    "course": "编程思维课",
+    "course": "美声唱法课",
     "teacher": "张老师",
-    "classroom": "C102",
+    "classroom": "麦房C",
     "status": "available"
   },
   {
@@ -164,9 +164,9 @@
     "date": "2026-05-22",
     "startTime": "09:00",
     "endTime": "10:00",
-    "course": "钢琴启蒙课",
+    "course": "声乐基础课",
     "teacher": "王老师",
-    "classroom": "A301",
+    "classroom": "麦房A",
     "status": "available"
   },
   {
@@ -174,9 +174,9 @@
     "date": "2026-05-22",
     "startTime": "10:00",
     "endTime": "11:00",
-    "course": "美术创意课",
+    "course": "民歌演唱课",
     "teacher": "李老师",
-    "classroom": "B205",
+    "classroom": "麦房B",
     "status": "available"
   },
   {
@@ -184,9 +184,9 @@
     "date": "2026-05-22",
     "startTime": "11:00",
     "endTime": "12:00",
-    "course": "编程思维课",
+    "course": "美声唱法课",
     "teacher": "张老师",
-    "classroom": "C102",
+    "classroom": "麦房C",
     "status": "available"
   },
   {
@@ -194,9 +194,9 @@
     "date": "2026-05-22",
     "startTime": "14:00",
     "endTime": "15:00",
-    "course": "英语口语课",
+    "course": "通俗流行课",
     "teacher": "陈老师",
-    "classroom": "D408",
+    "classroom": "麦房D",
     "status": "available"
   },
   {
@@ -204,9 +204,9 @@
     "date": "2026-05-23",
     "startTime": "09:00",
     "endTime": "10:00",
-    "course": "美术创意课",
+    "course": "民歌演唱课",
     "teacher": "李老师",
-    "classroom": "B205",
+    "classroom": "麦房B",
     "status": "available"
   },
   {
@@ -214,9 +214,9 @@
     "date": "2026-05-23",
     "startTime": "10:00",
     "endTime": "11:00",
-    "course": "编程思维课",
+    "course": "美声唱法课",
     "teacher": "张老师",
-    "classroom": "C102",
+    "classroom": "麦房C",
     "status": "available"
   },
   {
@@ -224,9 +224,9 @@
     "date": "2026-05-23",
     "startTime": "11:00",
     "endTime": "12:00",
-    "course": "英语口语课",
+    "course": "通俗流行课",
     "teacher": "陈老师",
-    "classroom": "D408",
+    "classroom": "麦房D",
     "status": "available"
   },
   {
@@ -234,9 +234,9 @@
     "date": "2026-05-23",
     "startTime": "14:00",
     "endTime": "15:00",
-    "course": "钢琴启蒙课",
+    "course": "声乐基础课",
     "teacher": "王老师",
-    "classroom": "A301",
+    "classroom": "麦房A",
     "status": "available"
   },
   {
@@ -244,9 +244,9 @@
     "date": "2026-05-23",
     "startTime": "15:00",
     "endTime": "16:00",
-    "course": "美术创意课",
+    "course": "民歌演唱课",
     "teacher": "李老师",
-    "classroom": "B205",
+    "classroom": "麦房B",
     "status": "available"
   },
   {
@@ -254,9 +254,9 @@
     "date": "2026-05-24",
     "startTime": "09:00",
     "endTime": "10:00",
-    "course": "编程思维课",
+    "course": "美声唱法课",
     "teacher": "张老师",
-    "classroom": "C102",
+    "classroom": "麦房C",
     "status": "available"
   },
   {
@@ -264,9 +264,9 @@
     "date": "2026-05-24",
     "startTime": "10:00",
     "endTime": "11:00",
-    "course": "英语口语课",
+    "course": "通俗流行课",
     "teacher": "陈老师",
-    "classroom": "D408",
+    "classroom": "麦房D",
     "status": "available"
   },
   {
@@ -274,9 +274,9 @@
     "date": "2026-05-24",
     "startTime": "11:00",
     "endTime": "12:00",
-    "course": "钢琴启蒙课",
+    "course": "声乐基础课",
     "teacher": "王老师",
-    "classroom": "A301",
+    "classroom": "麦房A",
     "status": "available"
   },
   {
@@ -284,9 +284,9 @@
     "date": "2026-05-24",
     "startTime": "14:00",
     "endTime": "15:00",
-    "course": "美术创意课",
+    "course": "民歌演唱课",
     "teacher": "李老师",
-    "classroom": "B205",
+    "classroom": "麦房B",
     "status": "available"
   },
   {
@@ -294,9 +294,9 @@
     "date": "2026-05-24",
     "startTime": "15:00",
     "endTime": "16:00",
-    "course": "编程思维课",
+    "course": "美声唱法课",
     "teacher": "张老师",
-    "classroom": "C102",
+    "classroom": "麦房C",
     "status": "available"
   }
 ]

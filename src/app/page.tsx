@@ -5,14 +5,13 @@ import { Navbar } from '@/components/navbar';
 import {
   GraduationCap,
   Music,
-  Palette,
-  Code,
   MessageCircle,
   Calendar,
   Clock,
   Info,
   CheckCircle2,
   AlertCircle,
+  Mic,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -34,25 +33,23 @@ interface CourseInfo {
   color: string;
   tag: string;
   description: string;
-  ageRange: string;
   teacher: string;
 }
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   music: Music,
-  palette: Palette,
-  code: Code,
   'message-circle': MessageCircle,
+  mic: Mic,
 };
 
 const courseIconBgs: Record<string, string> = {
-  piano: 'bg-accent-yellow/20',
-  art: 'bg-accent-pink/20',
-  coding: 'bg-accent-green/20',
-  english: 'bg-primary/20',
+  'vocal-basics': 'bg-accent-yellow/20',
+  'folk-singing': 'bg-accent-pink/20',
+  'bel-canto': 'bg-accent-green/20',
+  'pop-singing': 'bg-primary/20',
 };
 
-const courseNames = ['钢琴启蒙课', '美术创意课', '编程思维课', '英语口语课'];
+const courseNames = ['声乐基础课', '民歌演唱课', '美声唱法课', '通俗流行课'];
 
 export default function HomePage() {
   const router = useRouter();
@@ -63,7 +60,6 @@ export default function HomePage() {
   const [selectedSlot, setSelectedSlot] = useState<string>('');
   const [studentName, setStudentName] = useState('');
   const [phone, setPhone] = useState('');
-  const [age, setAge] = useState('');
   const [requirement, setRequirement] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -118,7 +114,6 @@ export default function HomePage() {
     setError('');
     if (!studentName.trim()) { setError('请输入学员姓名'); return; }
     if (!phone.trim()) { setError('请输入联系电话'); return; }
-    if (!age) { setError('请选择学员年龄'); return; }
     if (!selectedCourse) { setError('请选择试听课程'); return; }
     if (!selectedSlot) { setError('请选择预约时段'); return; }
 
@@ -131,7 +126,6 @@ export default function HomePage() {
           action: 'create',
           studentName,
           phone,
-          age,
           requirement,
           timeSlotId: selectedSlot,
         }),
@@ -154,9 +148,9 @@ export default function HomePage() {
       <Navbar />
 
       <main className="mx-auto max-w-6xl px-6 py-8">
-        <h1 className="text-2xl font-bold text-foreground">预约试听课程</h1>
+        <h1 className="text-2xl font-bold text-foreground">预约连麦课程</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          选择感兴趣的课程和合适的时段，填写学员信息即可完成预约
+          选择感兴趣的课程和合适的时段，填写信息即可完成连麦预约
         </p>
 
         <div className="mt-8 flex gap-8">
@@ -189,28 +183,13 @@ export default function HomePage() {
                     className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-foreground">学员年龄</label>
-                  <select
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  >
-                    <option value="">请选择年龄</option>
-                    <option value="4-6岁">4-6岁</option>
-                    <option value="6-8岁">6-8岁</option>
-                    <option value="8-10岁">8-10岁</option>
-                    <option value="10-12岁">10-12岁</option>
-                    <option value="12岁以上">12岁以上</option>
-                  </select>
-                </div>
-                <div>
+                <div className="col-span-2">
                   <label className="mb-1.5 block text-sm font-medium text-foreground">课程需求</label>
                   <input
                     type="text"
                     value={requirement}
                     onChange={(e) => setRequirement(e.target.value)}
-                    placeholder="可选，如希望重点学习的内容"
+                    placeholder="可选，如希望重点学习的内容、擅长曲目等"
                     className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
@@ -220,12 +199,12 @@ export default function HomePage() {
             {/* Course Selection */}
             <section className="rounded-xl bg-card p-6 shadow-card">
               <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
-                <GraduationCap className="h-5 w-5 text-primary" />
+                <Mic className="h-5 w-5 text-primary" />
                 选择课程
               </h2>
               <div className="mt-4 grid grid-cols-2 gap-3">
                 {courses.map((c) => {
-                  const Icon = iconMap[c.icon] || GraduationCap;
+                  const Icon = iconMap[c.icon] || Music;
                   const isSelected = selectedCourse === c.id;
                   return (
                     <button
@@ -246,7 +225,7 @@ export default function HomePage() {
                       </div>
                       <div>
                         <div className="text-sm font-semibold text-foreground">{c.name}</div>
-                        <div className="text-xs text-muted-foreground">{c.teacher} · {c.ageRange}</div>
+                        <div className="text-xs text-muted-foreground">{c.teacher}</div>
                       </div>
                       {isSelected && <CheckCircle2 className="ml-auto h-5 w-5 shrink-0 text-primary" />}
                     </button>
@@ -373,16 +352,13 @@ export default function HomePage() {
                 <div className="mt-3 space-y-2">
                   <div className="flex items-center gap-2">
                     {(() => {
-                      const Icon = iconMap[selectedCourseInfo.icon] || GraduationCap;
+                      const Icon = iconMap[selectedCourseInfo.icon] || Music;
                       return <Icon className="h-5 w-5 text-primary" />;
                     })()}
                     <span className="text-sm font-semibold text-foreground">{selectedCourseInfo.name}</span>
                   </div>
                   <div className="text-xs text-muted-foreground">
                     讲师：{selectedCourseInfo.teacher}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    适合年龄：{selectedCourseInfo.ageRange}
                   </div>
                 </div>
               ) : (
@@ -399,7 +375,7 @@ export default function HomePage() {
                     {selectedSlotInfo.date} {selectedSlotInfo.startTime}-{selectedSlotInfo.endTime}
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    教室：{selectedSlotInfo.classroom}
+                    连麦房间：{selectedSlotInfo.classroom}
                   </div>
                 </div>
               ) : (
@@ -416,11 +392,11 @@ export default function HomePage() {
               <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-3 w-3 shrink-0 text-accent-green" />
-                  试听课完全免费，无任何附加费用
+                  试听连麦课完全免费，无任何附加费用
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-3 w-3 shrink-0 text-accent-green" />
-                  请提前10分钟到场签到
+                  请提前5分钟进入连麦房间测试设备
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-3 w-3 shrink-0 text-accent-green" />

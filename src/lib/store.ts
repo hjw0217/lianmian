@@ -8,7 +8,7 @@ export interface TimeSlot {
   endTime: string;    // HH:mm
   course: string;
   teacher: string;
-  classroom: string;
+  classroom: string;  // 连麦房间号
   status: 'available' | 'booked' | 'expired';
 }
 
@@ -17,7 +17,6 @@ export interface Booking {
   bookingNo: string;
   studentName: string;
   phone: string;
-  age: string;
   requirement: string;
   course: string;
   teacher: string;
@@ -63,9 +62,9 @@ function writeJSON<T>(filePath: string, data: T) {
 
 function getDefaultTimeSlots(): TimeSlot[] {
   const slots: TimeSlot[] = [];
-  const courses = ['钢琴启蒙课', '美术创意课', '编程思维课', '英语口语课'];
+  const courses = ['声乐基础课', '民歌演唱课', '美声唱法课', '通俗流行课'];
   const teachers = ['王老师', '李老师', '张老师', '陈老师'];
-  const classrooms = ['A301', 'B205', 'C102', 'D408'];
+  const classrooms = ['麦房A', '麦房B', '麦房C', '麦房D'];
   const times = ['09:00-10:00', '10:00-11:00', '11:00-12:00', '14:00-15:00', '15:00-16:00', '16:00-17:00'];
 
   const today = new Date();
@@ -149,7 +148,6 @@ export function getBookingById(id: string): Booking | null {
 export function createBooking(data: {
   studentName: string;
   phone: string;
-  age: string;
   requirement: string;
   timeSlotId: string;
 }): Booking | { error: string } {
@@ -165,7 +163,6 @@ export function createBooking(data: {
     bookingNo: generateBookingNo(),
     studentName: data.studentName,
     phone: data.phone,
-    age: data.age,
     requirement: data.requirement,
     course: slot.course,
     teacher: slot.teacher,
@@ -246,49 +243,44 @@ export interface Course {
   color: string;
   tag: string;
   description: string;
-  ageRange: string;
   teacher: string;
 }
 
 export const courses: Course[] = [
   {
-    id: 'piano',
-    name: '钢琴启蒙课',
+    id: 'vocal-basics',
+    name: '声乐基础课',
     icon: 'music',
     color: 'accent-yellow',
     tag: '热门',
-    description: '从零开始，感受黑白键上的音乐世界，培养节奏感与表现力',
-    ageRange: '5-12岁',
+    description: '从呼吸法到发声技巧，系统学习声乐基础，轻松开口唱',
     teacher: '王老师',
   },
   {
-    id: 'art',
-    name: '美术创意课',
-    icon: 'palette',
+    id: 'folk-singing',
+    name: '民歌演唱课',
+    icon: 'music',
     color: 'accent-pink',
     tag: '新课',
-    description: '水彩、素描、手工综合创意课，激发孩子的艺术想象力',
-    ageRange: '4-10岁',
+    description: '经典民歌逐句教学，感受民族声乐的独特韵味',
     teacher: '李老师',
   },
   {
-    id: 'coding',
-    name: '编程思维课',
-    icon: 'code',
+    id: 'bel-canto',
+    name: '美声唱法课',
+    icon: 'music',
     color: 'accent-green',
     tag: '热门',
-    description: 'Scratch图形化编程入门，在游戏创作中锻炼逻辑思维',
-    ageRange: '7-14岁',
+    description: '科学发声与共鸣训练，掌握美声唱法的核心要领',
     teacher: '张老师',
   },
   {
-    id: 'english',
-    name: '英语口语课',
+    id: 'pop-singing',
+    name: '通俗流行课',
     icon: 'message-circle',
     color: 'accent-yellow',
     tag: '推荐',
-    description: '沉浸式情景口语教学，让孩子自信开口说英语',
-    ageRange: '6-12岁',
+    description: '流行歌曲演唱技巧，情感表达与舞台表现力全面提升',
     teacher: '陈老师',
   },
 ];

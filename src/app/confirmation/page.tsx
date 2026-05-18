@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/navbar';
-import { CheckCircle2, Download, Home, MapPin, Clock, User, Phone, Calendar, FileText, AlertCircle } from 'lucide-react';
+import { CheckCircle2, Download, Home, Clock, User, Phone, Calendar, FileText, AlertCircle, Mic } from 'lucide-react';
 import Link from 'next/link';
 
 interface Booking {
@@ -11,7 +11,6 @@ interface Booking {
   bookingNo: string;
   studentName: string;
   phone: string;
-  age: string;
   requirement: string;
   course: string;
   teacher: string;
@@ -49,9 +48,9 @@ export default function ConfirmationPage() {
     if (!booking) return;
 
     const content = `
-══════════════════════════════════
-        课程预约确认卡
-══════════════════════════════════
+═══════════════════════════════════
+        连麦课程预约确认卡
+═══════════════════════════════════
 
 预约编号：${booking.bookingNo}
 状　　态：${booking.status === 'confirmed' ? '已确认' : booking.status}
@@ -59,7 +58,7 @@ export default function ConfirmationPage() {
 【课程信息】
 课　　程：${booking.course}
 讲　　师：${booking.teacher}
-教　　室：${booking.classroom}
+连麦房间：${booking.classroom}
 
 【时间信息】
 日　　期：${booking.date}
@@ -68,18 +67,17 @@ export default function ConfirmationPage() {
 【学员信息】
 姓　　名：${booking.studentName}
 电　　话：${booking.phone}
-年　　龄：${booking.age}
 ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
 
 预约时间：${new Date(booking.createdAt).toLocaleString('zh-CN')}
 
-══════════════════════════════════
+═══════════════════════════════════
 温馨提示：
-1. 请携带有效证件到场
-2. 请提前10分钟到场签到
-3. 试听课完全免费
+1. 请提前5分钟进入连麦房间测试设备
+2. 确保网络稳定、麦克风正常
+3. 试听连麦课完全免费
 4. 如需变更请联系客服
-══════════════════════════════════
+═══════════════════════════════════
     `.trim();
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -130,7 +128,7 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
             <CheckCircle2 className="h-8 w-8 text-accent-green" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">预约成功！</h1>
-          <p className="mt-1 text-sm text-muted-foreground">您的试听课已成功预约，请按时到场</p>
+          <p className="mt-1 text-sm text-muted-foreground">您的连麦课程已成功预约，请按时上线</p>
         </div>
 
         {/* Confirmation Card */}
@@ -155,7 +153,7 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
                   <div className="text-sm font-semibold text-foreground">{booking.teacher}</div>
                 </div>
                 <div className="rounded-lg bg-muted px-3 py-2">
-                  <div className="text-xs text-muted-foreground">教室</div>
+                  <div className="text-xs text-muted-foreground">连麦房间</div>
                   <div className="text-sm font-semibold text-foreground">{booking.classroom}</div>
                 </div>
               </div>
@@ -191,7 +189,7 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
                 <User className="h-4 w-4 text-primary" />
                 学员信息
               </h2>
-              <div className="mt-3 grid grid-cols-3 gap-3">
+              <div className="mt-3 grid grid-cols-2 gap-3">
                 <div className="rounded-lg bg-muted px-3 py-2">
                   <div className="text-xs text-muted-foreground">姓名</div>
                   <div className="text-sm font-semibold text-foreground">{booking.studentName}</div>
@@ -200,11 +198,13 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
                   <div className="text-xs text-muted-foreground">电话</div>
                   <div className="text-sm font-semibold text-foreground">{maskedPhone}</div>
                 </div>
-                <div className="rounded-lg bg-muted px-3 py-2">
-                  <div className="text-xs text-muted-foreground">年龄</div>
-                  <div className="text-sm font-semibold text-foreground">{booking.age}</div>
-                </div>
               </div>
+              {booking.requirement && (
+                <div className="mt-3 rounded-lg bg-muted px-3 py-2">
+                  <div className="text-xs text-muted-foreground">课程需求</div>
+                  <div className="text-sm font-semibold text-foreground">{booking.requirement}</div>
+                </div>
+              )}
             </div>
 
             {/* Booking No & Status */}
@@ -244,16 +244,16 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
             <h3 className="text-sm font-semibold text-foreground">温馨提示</h3>
             <ul className="mt-3 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
               <li className="flex items-center gap-1.5">
-                <MapPin className="h-3 w-3 shrink-0 text-primary" />
-                请携带有效证件到场
+                <Mic className="h-3 w-3 shrink-0 text-primary" />
+                请提前5分钟进入连麦房间
               </li>
               <li className="flex items-center gap-1.5">
                 <Clock className="h-3 w-3 shrink-0 text-primary" />
-                请提前10分钟到场签到
+                确保网络稳定、麦克风正常
               </li>
               <li className="flex items-center gap-1.5">
                 <CheckCircle2 className="h-3 w-3 shrink-0 text-accent-green" />
-                试听课完全免费
+                试听连麦课完全免费
               </li>
               <li className="flex items-center gap-1.5">
                 <Phone className="h-3 w-3 shrink-0 text-primary" />

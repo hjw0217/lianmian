@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, AlertCircle } from 'lucide-react';
+import { Mic, AlertCircle } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
           {/* Header */}
           <div className="mb-6 text-center">
             <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-              <GraduationCap className="h-7 w-7 text-primary" />
+              <Mic className="h-7 w-7 text-primary" />
             </div>
             <h1 className="text-xl font-bold text-foreground">管理后台登录</h1>
           </div>

@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { GraduationCap } from 'lucide-react';
+import { GraduationCap, Mic } from 'lucide-react';
 
 const navItems = [
-  { href: '/', label: '预约试听' },
+  { href: '/', label: '预约连麦' },
   { href: '/admin', label: '管理后台' },
 ];
 
@@ -16,8 +16,8 @@ export function Navbar() {
     <header className="sticky top-0 z-40 bg-card shadow-card">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2">
-          <GraduationCap className="h-6 w-6 text-primary" />
-          <span className="text-lg font-bold text-foreground">课程预约</span>
+          <Mic className="h-6 w-6 text-primary" />
+          <span className="text-lg font-bold text-foreground">声乐连麦</span>
         </Link>
         <nav className="flex items-center gap-1">
           {navItems.map((item) => {
