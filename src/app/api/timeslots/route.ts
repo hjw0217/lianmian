@@ -1,104 +1,99 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getTimeSlots, getTimeSlotsByDate, addTimeSlot, updateTimeSlot, deleteTimeSlot, verifyAdmin } from '@/lib/store';
+import { NextResponse } from 'next/server';
+import { getTimeSlots } from '@/lib/store';
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const date = searchParams.get('date');
-  const slots = date ? getTimeSlotsByDate(date) : getTimeSlots();
-  return NextResponse.json({ success: true, data: slots });
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function mapSlot(s: any) {
+  return {
+    id: s.id,
+    date: s.date,
+    startTime: s.start_time,
+    endTime: s.end_time,
+    teacher: s.teacher,
+    status: s.status,
+  };
 }
 
-export async function POST(request: NextRequest) {
+export async function GET(request: Request) {
   try {
-    const body = await request.json();
-    const { action, token, ...data } = body;
-
-    // Verify admin for write operations
-    if (!token || !verifyAdmin(token)) {
-      return NextResponse.json({ error: '未授权，请先登录' }, { status: 401 });
-    }
-
-    if (action === 'add') {
-      const { date, startTime, endTime, teacher } = data;
-      if (!date || !startTime || !endTime || !teacher) {
-        return NextResponse.json({ error: '请填写完整的时段信息' }, { status: 400 });
-      }
-      const slot = addTimeSlot({ date, startTime, endTime, teacher, status: 'available' });
-      return NextResponse.json({ success: true, data: slot });
-    }
-
-    if (action === 'update') {
-      const { id, ...updates } = data;
-      if (!id) {
-        return NextResponse.json({ error: '缺少时段ID' }, { status: 400 });
-      }
-      const slot = updateTimeSlot(id, updates);
-      if (!slot) {
-        return NextResponse.json({ error: '时段不存在' }, { status: 404 });
-      }
-      return NextResponse.json({ success: true, data: slot });
-    }
-
-    if (action === 'delete') {
-      const { id } = data;
-      if (!id) {
-        return NextResponse.json({ error: '缺少时段ID' }, { status: 400 });
-      }
-      const ok = deleteTimeSlot(id);
-      if (!ok) {
-        return NextResponse.json({ error: '时段不存在' }, { status: 404 });
-      }
-      return NextResponse.json({ success: true });
-    }
-
-    return NextResponse.json({ error: '未知操作' }, { status: 400 });
-  } catch {
-    return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
+    const { searchParams } = new URL(request.url);
+    const date = searchParams.get('date') || undefined;
+    const slots = await getTimeSlots(date);
+    const mapped = slots.map(mapSlot);
+    return NextResponse.json({ success: true, data: mapped });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '查询时段失败';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { token, id, ...updates } = body;
-
-    if (!token || !verifyAdmin(token)) {
+    const token = body.token as string | undefined;
+    if (!token) {
       return NextResponse.json({ error: '未授权，请先登录' }, { status: 401 });
     }
 
-    if (!id) {
-      return NextResponse.json({ error: '缺少时段ID' }, { status: 400 });
+    const { verifyAuthToken, addTimeSlot } = await import('@/lib/store');
+    if (!verifyAuthToken(token)) {
+      return NextResponse.json({ error: '认证已过期，请重新登录' }, { status: 401 });
     }
 
-    const slot = updateTimeSlot(id, updates);
-    if (!slot) {
-      return NextResponse.json({ error: '时段不存在' }, { status: 404 });
+    const { date, startTime, endTime, teacher } = body;
+    if (!date || !startTime || !endTime || !teacher) {
+      return NextResponse.json({ error: '缺少必填字段（日期、开始时间、结束时间、讲师）' }, { status: 400 });
     }
-    return NextResponse.json({ success: true, data: slot });
-  } catch {
-    return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
+
+    const id = `ts-${Date.now().toString(36)}`;
+    const slot = await addTimeSlot({ id, date, start_time: startTime, end_time: endTime, teacher, status: 'available' });
+    return NextResponse.json({ success: true, data: mapSlot(slot) });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '操作失败';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { token, id } = body;
-
-    if (!token || !verifyAdmin(token)) {
-      return NextResponse.json({ error: '未授权，请先登录' }, { status: 401 });
+    const { verifyAuthToken, updateTimeSlot } = await import('@/lib/store');
+    if (!verifyAuthToken(body.token)) {
+      return NextResponse.json({ error: '认证已过期，请重新登录' }, { status: 401 });
     }
 
-    if (!id) {
-      return NextResponse.json({ error: '缺少时段ID' }, { status: 400 });
+    const { id, date, startTime, endTime, teacher, status } = body;
+    if (!id) return NextResponse.json({ error: '缺少时段ID' }, { status: 400 });
+
+    const updates: Record<string, unknown> = {};
+    if (date) updates.date = date;
+    if (startTime) updates.start_time = startTime;
+    if (endTime) updates.end_time = endTime;
+    if (teacher) updates.teacher = teacher;
+    if (status) updates.status = status;
+
+    const slot = await updateTimeSlot(id, updates);
+    return NextResponse.json({ success: true, data: mapSlot(slot) });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '更新失败';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const body = await request.json();
+    const { verifyAuthToken, deleteTimeSlot } = await import('@/lib/store');
+    if (!verifyAuthToken(body.token)) {
+      return NextResponse.json({ error: '认证已过期，请重新登录' }, { status: 401 });
     }
 
-    const ok = deleteTimeSlot(id);
-    if (!ok) {
-      return NextResponse.json({ error: '时段不存在' }, { status: 404 });
-    }
+    const { id } = body;
+    if (!id) return NextResponse.json({ error: '缺少时段ID' }, { status: 400 });
+
+    await deleteTimeSlot(id);
     return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '删除失败';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

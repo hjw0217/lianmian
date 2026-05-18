@@ -1,233 +1,241 @@
-import fs from 'fs';
-import path from 'path';
+import { getSupabaseClient } from '@/storage/database/supabase-client';
+
+// ========== Types ==========
 
 export interface TimeSlot {
   id: string;
-  date: string;       // YYYY-MM-DD
-  startTime: string;  // HH:mm
-  endTime: string;    // HH:mm
+  date: string;
+  start_time: string;
+  end_time: string;
   teacher: string;
-  status: 'available' | 'booked' | 'expired';
+  status: 'available' | 'booked';
+  created_at: string;
+  updated_at: string | null;
 }
 
 export interface Booking {
   id: string;
-  bookingNo: string;
-  studentName: string;
+  booking_no: string;
+  student_name: string;
   phone: string;
-  requirement: string;
+  requirement: string | null;
   teacher: string;
   date: string;
-  timeSlot: string;
-  status: 'confirmed' | 'pending' | 'cancelled';
-  createdAt: string;
+  time_slot: string;
+  timeslot_id: string;
+  status: 'confirmed' | 'cancelled';
+  created_at: string;
+  updated_at: string | null;
 }
 
-// Admin auth uses stateless signed tokens
-
-const isProd = process.env.COZE_PROJECT_ENV === 'PROD';
-const DATA_DIR = isProd ? '/tmp/vocal-booking-data' : path.join(process.cwd(), 'data');
-const BOOKINGS_FILE = path.join(DATA_DIR, 'bookings.json');
-const TIMESLOTS_FILE = path.join(DATA_DIR, 'timeslots.json');
-
-function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-}
-
-function readJSON<T>(filePath: string, defaultValue: T): T {
-  ensureDataDir();
-  if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, JSON.stringify(defaultValue, null, 2), 'utf-8');
-    return defaultValue;
-  }
-  const raw = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(raw) as T;
-}
-
-function writeJSON<T>(filePath: string, data: T) {
-  ensureDataDir();
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
-}
-
-// ==================== TimeSlots ====================
-
-function getDefaultTimeSlots(): TimeSlot[] {
-  const slots: TimeSlot[] = [];
-  const teachers = ['王老师', '李老师', '张老师', '陈老师'];
-  const times = ['09:00-10:00', '10:00-11:00', '11:00-12:00', '14:00-15:00', '15:00-16:00', '16:00-17:00'];
-
-  const today = new Date();
-  let id = 1;
-  for (let d = 0; d < 7; d++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + d);
-    const dateStr = date.toISOString().slice(0, 10);
-    const dayOfWeek = date.getDay();
-
-    const slotCount = dayOfWeek === 0 || dayOfWeek === 6 ? 5 : 4;
-    for (let t = 0; t < slotCount; t++) {
-      const tIdx = (d + t) % teachers.length;
-      slots.push({
-        id: `ts-${String(id++).padStart(3, '0')}`,
-        date: dateStr,
-        startTime: times[t].split('-')[0],
-        endTime: times[t].split('-')[1],
-        teacher: teachers[tIdx],
-        status: t === 0 && d === 1 ? 'booked' : (d === 0 && t > 3 ? 'expired' : 'available'),
-      });
-    }
-  }
-  return slots;
-}
-
-export function getTimeSlots(): TimeSlot[] {
-  return readJSON<TimeSlot[]>(TIMESLOTS_FILE, getDefaultTimeSlots());
-}
-
-export function getTimeSlotsByDate(date: string): TimeSlot[] {
-  return getTimeSlots().filter(s => s.date === date);
-}
-
-export function addTimeSlot(slot: Omit<TimeSlot, 'id'>): TimeSlot {
-  const slots = getTimeSlots();
-  const id = `ts-${String(slots.length + 1).padStart(3, '0')}`;
-  const newSlot: TimeSlot = { ...slot, id };
-  slots.push(newSlot);
-  writeJSON(TIMESLOTS_FILE, slots);
-  return newSlot;
-}
-
-export function updateTimeSlot(id: string, updates: Partial<TimeSlot>): TimeSlot | null {
-  const slots = getTimeSlots();
-  const idx = slots.findIndex(s => s.id === id);
-  if (idx === -1) return null;
-  slots[idx] = { ...slots[idx], ...updates };
-  writeJSON(TIMESLOTS_FILE, slots);
-  return slots[idx];
-}
-
-export function deleteTimeSlot(id: string): boolean {
-  const slots = getTimeSlots();
-  const filtered = slots.filter(s => s.id !== id);
-  if (filtered.length === slots.length) return false;
-  writeJSON(TIMESLOTS_FILE, filtered);
-  return true;
-}
-
-// ==================== Bookings ====================
-
-function generateBookingNo(): string {
-  const now = new Date();
-  const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
-  const seq = String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
-  return `TR${dateStr}${seq}`;
-}
-
-export function getBookings(): Booking[] {
-  return readJSON<Booking[]>(BOOKINGS_FILE, []);
-}
-
-export function getBookingById(id: string): Booking | null {
-  return getBookings().find(b => b.id === id) ?? null;
-}
-
-export function createBooking(data: {
-  studentName: string;
-  phone: string;
-  requirement: string;
-  timeSlotId: string;
-}): Booking | { error: string } {
-  const slots = getTimeSlots();
-  const slot = slots.find(s => s.id === data.timeSlotId);
-  if (!slot) return { error: '时间段不存在' };
-  if (slot.status !== 'available') return { error: '该时间段已被预约' };
-
-  const bookings = getBookings();
-  const id = `bk-${String(bookings.length + 1).padStart(3, '0')}`;
-  const booking: Booking = {
-    id,
-    bookingNo: generateBookingNo(),
-    studentName: data.studentName,
-    phone: data.phone,
-    requirement: data.requirement,
-    teacher: slot.teacher,
-    date: slot.date,
-    timeSlot: `${slot.startTime}-${slot.endTime}`,
-    status: 'confirmed',
-    createdAt: new Date().toISOString(),
-  };
-
-  // Mark slot as booked
-  const slotIdx = slots.findIndex(s => s.id === data.timeSlotId);
-  slots[slotIdx].status = 'booked';
-  writeJSON(TIMESLOTS_FILE, slots);
-
-  bookings.push(booking);
-  writeJSON(BOOKINGS_FILE, bookings);
-  return booking;
-}
-
-export function cancelBooking(id: string): Booking | null {
-  const bookings = getBookings();
-  const idx = bookings.findIndex(b => b.id === id);
-  if (idx === -1) return null;
-  bookings[idx].status = 'cancelled';
-  writeJSON(BOOKINGS_FILE, bookings);
-
-  // Free up the time slot
-  const booking = bookings[idx];
-  const slots = getTimeSlots();
-  const slotIdx = slots.findIndex(
-    s => s.date === booking.date && s.startTime === booking.timeSlot.split('-')[0] && s.teacher === booking.teacher
-  );
-  if (slotIdx !== -1) {
-    slots[slotIdx].status = 'available';
-    writeJSON(TIMESLOTS_FILE, slots);
-  }
-
-  return bookings[idx];
-}
-
-// ==================== Admin Auth ====================
+// ========== Auth ==========
 
 const ADMIN_USERNAME = 'admin';
 const ADMIN_PASSWORD = 'admin123';
 const TOKEN_SECRET = 'vocal_link_admin_2026';
 
-function signToken(username: string): string {
-  const payload = `${username}:${Date.now()}`;
+function signToken(username: string, timestamp: number): string {
+  const payload = `${username}:${timestamp}`;
   const signature = Buffer.from(`${payload}:${TOKEN_SECRET}`).toString('base64url');
-  return `${payload}.${signature}`;
+  return `${username}:${timestamp}.${signature}`;
 }
 
 function verifyToken(token: string): boolean {
   try {
     const [payload, signature] = token.split('.');
-    if (!payload || !signature) return false;
-    const expected = Buffer.from(`${payload}:${TOKEN_SECRET}`).toString('base64url');
-    if (signature !== expected) return false;
-    const [, ts] = payload.split(':');
-    const createdAt = Number(ts);
-    if (Date.now() - createdAt > 24 * 60 * 60 * 1000) return false;
-    return true;
+    const decoded = Buffer.from(signature, 'base64url').toString();
+    const expected = decoded.split(':').slice(0, -1).join(':') + ':' + decoded.split(':').pop();
+    const [username, timestamp] = payload.split(':');
+    const expectedSignature = Buffer.from(`${username}:${timestamp}:${TOKEN_SECRET}`).toString('base64url');
+    if (signature !== expectedSignature) return false;
+    const ts = parseInt(timestamp);
+    if (Date.now() - ts > 24 * 60 * 60 * 1000) return false;
+    return username === ADMIN_USERNAME;
   } catch {
     return false;
   }
 }
 
-export function adminLogin(username: string, password: string): string | null {
+export function authenticateUser(username: string, password: string): { success: boolean; token?: string; error?: string } {
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-    return signToken(username);
+    const token = signToken(username, Date.now());
+    return { success: true, token };
   }
-  return null;
+  return { success: false, error: '用户名或密码错误' };
 }
 
-export function verifyAdmin(token: string): boolean {
+export function verifyAuthToken(token: string): boolean {
   return verifyToken(token);
 }
 
-export function adminLogout(_token: string) {
-  // Stateless token, no cleanup needed
+// ========== TimeSlots ==========
+
+function getClient() {
+  return getSupabaseClient();
+}
+
+export async function getTimeSlots(date?: string): Promise<TimeSlot[]> {
+  const client = getClient();
+  let query = client.from('timeslots').select('*').order('date').order('start_time');
+  if (date) {
+    query = query.eq('date', date);
+  }
+  const { data, error } = await query;
+  if (error) throw new Error(`查询时段失败: ${error.message}`);
+  return (data as TimeSlot[]) || [];
+}
+
+export async function getTimeSlotById(id: string): Promise<TimeSlot | null> {
+  const client = getClient();
+  const { data, error } = await client.from('timeslots').select('*').eq('id', id).maybeSingle();
+  if (error) throw new Error(`查询时段失败: ${error.message}`);
+  return data as TimeSlot | null;
+}
+
+export async function addTimeSlot(slot: Omit<TimeSlot, 'created_at' | 'updated_at'>): Promise<TimeSlot> {
+  const client = getClient();
+  const { data, error } = await client.from('timeslots').insert(slot).select().single();
+  if (error) throw new Error(`添加时段失败: ${error.message}`);
+  return data as TimeSlot;
+}
+
+export async function updateTimeSlot(id: string, updates: Partial<Pick<TimeSlot, 'date' | 'start_time' | 'end_time' | 'teacher' | 'status'>>): Promise<TimeSlot> {
+  const client = getClient();
+  const { data, error } = await client.from('timeslots').update({ ...updates, updated_at: new Date().toISOString() }).eq('id', id).select().single();
+  if (error) throw new Error(`更新时段失败: ${error.message}`);
+  return data as TimeSlot;
+}
+
+export async function deleteTimeSlot(id: string): Promise<void> {
+  const client = getClient();
+  const { error } = await client.from('timeslots').delete().eq('id', id);
+  if (error) throw new Error(`删除时段失败: ${error.message}`);
+}
+
+// ========== Bookings ==========
+
+export async function getBookings(): Promise<Booking[]> {
+  const client = getClient();
+  const { data, error } = await client.from('bookings').select('*').order('created_at', { ascending: false });
+  if (error) throw new Error(`查询预约失败: ${error.message}`);
+  return (data as Booking[]) || [];
+}
+
+export async function createBooking(params: {
+  studentName: string;
+  phone: string;
+  requirement: string;
+  timeSlotId: string;
+}): Promise<Booking> {
+  const slot = await getTimeSlotById(params.timeSlotId);
+  if (!slot) throw new Error('时间段不存在');
+  if (slot.status === 'booked') throw new Error('该时段已被预约');
+
+  const bookingId = `bk-${Date.now().toString(36)}`;
+  const bookingNo = `TR${new Date().toISOString().slice(0, 10).replace(/-/g, '')}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+
+  const booking: Omit<Booking, 'created_at' | 'updated_at'> = {
+    id: bookingId,
+    booking_no: bookingNo,
+    student_name: params.studentName,
+    phone: params.phone,
+    requirement: params.requirement || null,
+    teacher: slot.teacher,
+    date: slot.date,
+    time_slot: `${slot.start_time}-${slot.end_time}`,
+    timeslot_id: slot.id,
+    status: 'confirmed',
+  };
+
+  const client = getClient();
+
+  // Update timeslot status
+  const { error: slotError } = await client.from('timeslots').update({ status: 'booked', updated_at: new Date().toISOString() }).eq('id', slot.id);
+  if (slotError) throw new Error(`更新时段状态失败: ${slotError.message}`);
+
+  // Create booking
+  const { data, error } = await client.from('bookings').insert(booking).select().single();
+  if (error) {
+    // Rollback timeslot status
+    await client.from('timeslots').update({ status: 'available', updated_at: new Date().toISOString() }).eq('id', slot.id);
+    throw new Error(`创建预约失败: ${error.message}`);
+  }
+
+  return data as Booking;
+}
+
+export async function cancelBooking(id: string): Promise<Booking> {
+  const client = getClient();
+
+  const { data: booking, error: fetchError } = await client.from('bookings').select('*').eq('id', id).maybeSingle();
+  if (fetchError) throw new Error(`查询预约失败: ${fetchError.message}`);
+  if (!booking) throw new Error('预约不存在');
+
+  const updatedBooking = booking as Booking;
+
+  // Update booking status
+  const { data, error } = await client.from('bookings').update({ status: 'cancelled', updated_at: new Date().toISOString() }).eq('id', id).select().single();
+  if (error) throw new Error(`取消预约失败: ${error.message}`);
+
+  // Restore timeslot status
+  if (updatedBooking.timeslot_id) {
+    await client.from('timeslots').update({ status: 'available', updated_at: new Date().toISOString() }).eq('id', updatedBooking.timeslot_id);
+  }
+
+  return data as Booking;
+}
+
+export async function getBookingsByTimeSlot(timeslotId: string): Promise<Booking[]> {
+  const client = getClient();
+  const { data, error } = await client.from('bookings').select('*').eq('timeslot_id', timeslotId).neq('status', 'cancelled');
+  if (error) throw new Error(`查询预约失败: ${error.message}`);
+  return (data as Booking[]) || [];
+}
+
+// ========== Seed Data ==========
+
+export async function seedInitialData(): Promise<void> {
+  const client = getClient();
+
+  // Check if data already exists
+  const { count, error: countError } = await client.from('timeslots').select('*', { count: 'exact', head: true });
+  if (countError) throw new Error(`检查数据失败: ${countError.message}`);
+  if (count && count > 0) return; // Data already seeded
+
+  const teachers = ['王老师', '李老师', '张老师', '陈老师'];
+  const slots: Omit<TimeSlot, 'created_at' | 'updated_at'>[] = [];
+
+  let slotIndex = 1;
+  const today = new Date();
+
+  for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
+    const date = new Date(today);
+    date.setDate(date.getDate() + dayOffset);
+    const dateStr = date.toISOString().slice(0, 10);
+    const dayOfWeek = date.getDay();
+
+    const timeSlots = [
+      { start: '09:00', end: '10:00' },
+      { start: '10:00', end: '11:00' },
+      { start: '11:00', end: '12:00' },
+      { start: '14:00', end: '15:00' },
+    ];
+
+    for (const ts of timeSlots) {
+      if (dayOfWeek === 0 && ts.start === '14:00') continue; // Sunday afternoon off
+      const teacherIdx = slotIndex % teachers.length;
+      slots.push({
+        id: `ts-${String(slotIndex).padStart(3, '0')}`,
+        date: dateStr,
+        start_time: ts.start,
+        end_time: ts.end,
+        teacher: teachers[teacherIdx],
+        status: 'available',
+      });
+      slotIndex++;
+    }
+  }
+
+  const { error } = await client.from('timeslots').insert(slots);
+  if (error) throw new Error(`初始化数据失败: ${error.message}`);
 }

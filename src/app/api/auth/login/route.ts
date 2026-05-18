@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminLogin } from '@/lib/store';
+import { authenticateUser } from '@/lib/store';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,12 +10,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '请输入用户名和密码' }, { status: 400 });
     }
 
-    const token = adminLogin(username, password);
-    if (!token) {
-      return NextResponse.json({ error: '用户名或密码错误' }, { status: 401 });
+    const result = authenticateUser(username, password);
+    if (!result.success) {
+      return NextResponse.json({ error: result.error }, { status: 401 });
     }
 
-    return NextResponse.json({ success: true, token });
+    return NextResponse.json({ success: true, token: result.token });
   } catch {
     return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
   }

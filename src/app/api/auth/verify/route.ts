@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyAdmin } from '@/lib/store';
+import { verifyAuthToken } from '@/lib/store';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '缺少认证令牌' }, { status: 401 });
     }
 
-    const valid = verifyAdmin(token);
+    const valid = verifyAuthToken(token);
     if (!valid) {
       return NextResponse.json({ error: '认证已过期，请重新登录' }, { status: 401 });
     }

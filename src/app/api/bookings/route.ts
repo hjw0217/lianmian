@@ -1,45 +1,65 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getBookings, createBooking, cancelBooking, verifyAdmin } from '@/lib/store';
+import { NextResponse } from 'next/server';
+import { getBookings, createBooking, cancelBooking, getBookingsByTimeSlot } from '@/lib/store';
 
-export async function GET() {
-  const bookings = getBookings();
-  return NextResponse.json({ success: true, data: bookings });
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function mapBooking(b: any) {
+  return {
+    id: b.id,
+    bookingNo: b.booking_no,
+    studentName: b.student_name,
+    phone: b.phone,
+    requirement: b.requirement,
+    teacher: b.teacher,
+    date: b.date,
+    timeSlot: b.time_slot,
+    timeslotId: b.timeslot_id,
+    status: b.status,
+    createdAt: b.created_at,
+  };
 }
 
-export async function POST(request: NextRequest) {
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const timeslotId = searchParams.get('timeslotId');
+
+    if (timeslotId) {
+      const bookings = await getBookingsByTimeSlot(timeslotId);
+      return NextResponse.json({ success: true, data: bookings.map(mapBooking) });
+    }
+
+    const bookings = await getBookings();
+    return NextResponse.json({ success: true, data: bookings.map(mapBooking) });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '查询预约失败';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { action, token, ...data } = body;
+    const { action } = body;
 
     if (action === 'create') {
-      const { studentName, phone, requirement, timeSlotId } = data;
+      const { studentName, phone, requirement, timeSlotId } = body;
       if (!studentName || !phone || !timeSlotId) {
-        return NextResponse.json({ error: '请填写完整的预约信息' }, { status: 400 });
+        return NextResponse.json({ error: '缺少必填字段' }, { status: 400 });
       }
-      const result = createBooking({ studentName, phone, requirement: requirement || '', timeSlotId });
-      if ('error' in result) {
-        return NextResponse.json({ error: result.error }, { status: 400 });
-      }
-      return NextResponse.json({ success: true, data: result });
+      const booking = await createBooking({ studentName, phone, requirement: requirement || '', timeSlotId });
+      return NextResponse.json({ success: true, data: mapBooking(booking) });
     }
 
     if (action === 'cancel') {
-      if (!token || !verifyAdmin(token)) {
-        return NextResponse.json({ error: '未授权，请先登录' }, { status: 401 });
-      }
-      const { id } = data;
-      if (!id) {
-        return NextResponse.json({ error: '缺少预约ID' }, { status: 400 });
-      }
-      const booking = cancelBooking(id);
-      if (!booking) {
-        return NextResponse.json({ error: '预约不存在' }, { status: 404 });
-      }
-      return NextResponse.json({ success: true, data: booking });
+      const { id } = body;
+      if (!id) return NextResponse.json({ error: '缺少预约ID' }, { status: 400 });
+      const booking = await cancelBooking(id);
+      return NextResponse.json({ success: true, data: mapBooking(booking) });
     }
 
     return NextResponse.json({ error: '未知操作' }, { status: 400 });
-  } catch {
-    return NextResponse.json({ error: '请求格式错误' }, { status: 400 });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '操作失败';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
