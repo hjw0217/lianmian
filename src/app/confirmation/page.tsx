@@ -121,14 +121,14 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="mx-auto max-w-6xl px-6 py-8">
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
         {/* Success Header */}
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-green/20">
-            <CheckCircle2 className="h-8 w-8 text-accent-green" />
+        <div className="mb-6 text-center sm:mb-8">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-accent-green/20 sm:mb-4 sm:h-16 sm:w-16">
+            <CheckCircle2 className="h-7 w-7 text-accent-green sm:h-8 sm:w-8" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">预约成功！</h1>
-          <p className="mt-1 text-sm text-muted-foreground">您的连麦课程已成功预约，请按时上线</p>
+          <h1 className="text-xl font-bold text-foreground sm:text-2xl">预约成功！</h1>
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">您的连麦课程已成功预约，请按时上线</p>
         </div>
 
         {/* Confirmation Card */}
@@ -136,48 +136,48 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
           {/* Top gradient bar */}
           <div className="h-2 bg-gradient-to-r from-primary via-accent-yellow to-accent-pink" />
 
-          <div className="p-6 space-y-5">
+          <div className="space-y-4 p-4 sm:space-y-5 sm:p-6">
             {/* Course Info */}
             <div>
-              <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
                 <FileText className="h-4 w-4 text-primary" />
                 课程信息
               </h2>
-              <div className="mt-3 grid grid-cols-3 gap-3">
-                <div className="rounded-lg bg-muted px-3 py-2">
-                  <div className="text-xs text-muted-foreground">课程</div>
-                  <div className="text-sm font-semibold text-foreground">{booking.course}</div>
+              <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3">
+                <div className="rounded-lg bg-muted px-2.5 py-2 sm:px-3">
+                  <div className="text-[10px] text-muted-foreground sm:text-xs">课程</div>
+                  <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.course}</div>
                 </div>
-                <div className="rounded-lg bg-muted px-3 py-2">
-                  <div className="text-xs text-muted-foreground">讲师</div>
-                  <div className="text-sm font-semibold text-foreground">{booking.teacher}</div>
+                <div className="rounded-lg bg-muted px-2.5 py-2 sm:px-3">
+                  <div className="text-[10px] text-muted-foreground sm:text-xs">讲师</div>
+                  <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.teacher}</div>
                 </div>
-                <div className="rounded-lg bg-muted px-3 py-2">
-                  <div className="text-xs text-muted-foreground">连麦房间</div>
-                  <div className="text-sm font-semibold text-foreground">{booking.classroom}</div>
+                <div className="rounded-lg bg-muted px-2.5 py-2 sm:px-3">
+                  <div className="text-[10px] text-muted-foreground sm:text-xs">连麦房间</div>
+                  <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.classroom}</div>
                 </div>
               </div>
             </div>
 
             {/* Time Info */}
             <div>
-              <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
                 <Clock className="h-4 w-4 text-primary" />
                 时间信息
               </h2>
-              <div className="mt-3 grid grid-cols-2 gap-3">
-                <div className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2">
-                  <Calendar className="h-4 w-4 text-primary" />
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3">
+                <div className="flex items-center gap-2 rounded-lg bg-muted px-2.5 py-2 sm:px-3">
+                  <Calendar className="h-3.5 w-3.5 text-primary sm:h-4 sm:w-4" />
                   <div>
-                    <div className="text-xs text-muted-foreground">日期</div>
-                    <div className="text-sm font-semibold text-foreground">{booking.date}</div>
+                    <div className="text-[10px] text-muted-foreground sm:text-xs">日期</div>
+                    <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.date}</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2">
-                  <Clock className="h-4 w-4 text-primary" />
+                <div className="flex items-center gap-2 rounded-lg bg-muted px-2.5 py-2 sm:px-3">
+                  <Clock className="h-3.5 w-3.5 text-primary sm:h-4 sm:w-4" />
                   <div>
-                    <div className="text-xs text-muted-foreground">时段</div>
-                    <div className="text-sm font-semibold text-foreground">{booking.timeSlot}</div>
+                    <div className="text-[10px] text-muted-foreground sm:text-xs">时段</div>
+                    <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.timeSlot}</div>
                   </div>
                 </div>
               </div>
@@ -185,35 +185,35 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
 
             {/* Student Info */}
             <div>
-              <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
                 <User className="h-4 w-4 text-primary" />
                 学员信息
               </h2>
-              <div className="mt-3 grid grid-cols-2 gap-3">
-                <div className="rounded-lg bg-muted px-3 py-2">
-                  <div className="text-xs text-muted-foreground">姓名</div>
-                  <div className="text-sm font-semibold text-foreground">{booking.studentName}</div>
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3">
+                <div className="rounded-lg bg-muted px-2.5 py-2 sm:px-3">
+                  <div className="text-[10px] text-muted-foreground sm:text-xs">姓名</div>
+                  <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.studentName}</div>
                 </div>
-                <div className="rounded-lg bg-muted px-3 py-2">
-                  <div className="text-xs text-muted-foreground">电话</div>
-                  <div className="text-sm font-semibold text-foreground">{maskedPhone}</div>
+                <div className="rounded-lg bg-muted px-2.5 py-2 sm:px-3">
+                  <div className="text-[10px] text-muted-foreground sm:text-xs">电话</div>
+                  <div className="text-xs font-semibold text-foreground sm:text-sm">{maskedPhone}</div>
                 </div>
               </div>
               {booking.requirement && (
-                <div className="mt-3 rounded-lg bg-muted px-3 py-2">
-                  <div className="text-xs text-muted-foreground">课程需求</div>
-                  <div className="text-sm font-semibold text-foreground">{booking.requirement}</div>
+                <div className="mt-2 rounded-lg bg-muted px-2.5 py-2 sm:mt-3 sm:px-3">
+                  <div className="text-[10px] text-muted-foreground sm:text-xs">课程需求</div>
+                  <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.requirement}</div>
                 </div>
               )}
             </div>
 
             {/* Booking No & Status */}
-            <div className="flex items-center justify-between rounded-lg bg-muted px-4 py-3">
+            <div className="flex items-center justify-between rounded-lg bg-muted px-3 py-2.5 sm:px-4 sm:py-3">
               <div>
-                <div className="text-xs text-muted-foreground">预约编号</div>
-                <div className="text-sm font-semibold text-foreground">#{booking.bookingNo}</div>
+                <div className="text-[10px] text-muted-foreground sm:text-xs">预约编号</div>
+                <div className="text-xs font-semibold text-foreground sm:text-sm">#{booking.bookingNo}</div>
               </div>
-              <span className="rounded-full bg-accent-green/20 px-3 py-1 text-xs font-semibold text-accent-green">
+              <span className="rounded-full bg-accent-green/20 px-2.5 py-1 text-[10px] font-semibold text-accent-green sm:px-3 sm:text-xs">
                 已确认
               </span>
             </div>
@@ -221,17 +221,17 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
         </div>
 
         {/* Actions */}
-        <div className="mx-auto mt-8 flex max-w-lg items-center justify-center gap-4">
+        <div className="mx-auto mt-6 flex max-w-lg items-center justify-center gap-3 sm:mt-8 sm:gap-4">
           <button
             onClick={handleDownload}
-            className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:-translate-y-0.5 hover:shadow-float"
+            className="flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:-translate-y-0.5 hover:shadow-float sm:px-6 sm:py-3"
           >
             <Download className="h-4 w-4" />
             下载确认卡
           </button>
           <Link
             href="/"
-            className="flex items-center gap-2 rounded-xl bg-muted px-6 py-3 text-sm font-semibold text-foreground transition-all hover:bg-surface-container-high"
+            className="flex items-center gap-1.5 rounded-xl bg-muted px-4 py-2.5 text-sm font-semibold text-foreground transition-all hover:bg-surface-container-high sm:px-6 sm:py-3"
           >
             <Home className="h-4 w-4" />
             返回首页
@@ -239,10 +239,10 @@ ${booking.requirement ? `课程需求：${booking.requirement}` : ''}
         </div>
 
         {/* Tips */}
-        <div className="mx-auto mt-8 max-w-lg">
-          <div className="rounded-xl bg-card p-5 shadow-card">
+        <div className="mx-auto mt-6 max-w-lg sm:mt-8">
+          <div className="rounded-xl bg-card p-4 shadow-card sm:p-5">
             <h3 className="text-sm font-semibold text-foreground">温馨提示</h3>
-            <ul className="mt-3 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+            <ul className="mt-3 grid grid-cols-1 gap-2 text-xs text-muted-foreground sm:grid-cols-2">
               <li className="flex items-center gap-1.5">
                 <Mic className="h-3 w-3 shrink-0 text-primary" />
                 请提前5分钟进入连麦房间

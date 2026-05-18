@@ -27,11 +27,7 @@ export interface Booking {
   createdAt: string;
 }
 
-export interface AdminSession {
-  token: string;
-  username: string;
-  createdAt: number;
-}
+// Admin auth uses stateless signed tokens
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const BOOKINGS_FILE = path.join(DATA_DIR, 'bookings.json');
@@ -208,30 +204,42 @@ export function cancelBooking(id: string): Booking | null {
 
 const ADMIN_USERNAME = 'admin';
 const ADMIN_PASSWORD = 'admin123';
-const sessions: Map<string, AdminSession> = new Map();
+const TOKEN_SECRET = 'vocal_link_admin_2026';
+
+function signToken(username: string): string {
+  const payload = `${username}:${Date.now()}`;
+  const signature = Buffer.from(`${payload}:${TOKEN_SECRET}`).toString('base64url');
+  return `${payload}.${signature}`;
+}
+
+function verifyToken(token: string): boolean {
+  try {
+    const [payload, signature] = token.split('.');
+    if (!payload || !signature) return false;
+    const expected = Buffer.from(`${payload}:${TOKEN_SECRET}`).toString('base64url');
+    if (signature !== expected) return false;
+    const [, ts] = payload.split(':');
+    const createdAt = Number(ts);
+    if (Date.now() - createdAt > 24 * 60 * 60 * 1000) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export function adminLogin(username: string, password: string): string | null {
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-    const token = `token_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-    sessions.set(token, { token, username, createdAt: Date.now() });
-    return token;
+    return signToken(username);
   }
   return null;
 }
 
 export function verifyAdmin(token: string): boolean {
-  const session = sessions.get(token);
-  if (!session) return false;
-  // 24h expiry
-  if (Date.now() - session.createdAt > 24 * 60 * 60 * 1000) {
-    sessions.delete(token);
-    return false;
-  }
-  return true;
+  return verifyToken(token);
 }
 
-export function adminLogout(token: string) {
-  sessions.delete(token);
+export function adminLogout(_token: string) {
+  // Stateless token, no cleanup needed
 }
 
 // ==================== Courses ====================

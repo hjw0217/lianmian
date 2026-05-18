@@ -147,22 +147,22 @@ export default function HomePage() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="mx-auto max-w-6xl px-6 py-8">
-        <h1 className="text-2xl font-bold text-foreground">预约连麦课程</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+        <h1 className="text-xl font-bold text-foreground sm:text-2xl">预约连麦课程</h1>
+        <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
           选择感兴趣的课程和合适的时段，填写信息即可完成连麦预约
         </p>
 
-        <div className="mt-8 flex gap-8">
+        <div className="mt-6 lg:flex lg:gap-8">
           {/* Left Form */}
-          <div className="flex-1 space-y-8">
+          <div className="flex-1 space-y-6 sm:space-y-8">
             {/* Student Info */}
-            <section className="rounded-xl bg-card p-6 shadow-card">
-              <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
-                <GraduationCap className="h-5 w-5 text-primary" />
+            <section className="rounded-xl bg-card p-4 shadow-card sm:p-6">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
+                <GraduationCap className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
                 学员信息
               </h2>
-              <div className="mt-4 grid grid-cols-2 gap-4">
+              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-foreground">学员姓名</label>
                   <input
@@ -170,7 +170,7 @@ export default function HomePage() {
                     value={studentName}
                     onChange={(e) => setStudentName(e.target.value)}
                     placeholder="请输入学员姓名"
-                    className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="w-full rounded-lg border-none bg-muted px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
                 <div>
@@ -180,29 +180,29 @@ export default function HomePage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="请输入联系电话"
-                    className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="w-full rounded-lg border-none bg-muted px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="sm:col-span-2">
                   <label className="mb-1.5 block text-sm font-medium text-foreground">课程需求</label>
                   <input
                     type="text"
                     value={requirement}
                     onChange={(e) => setRequirement(e.target.value)}
                     placeholder="可选，如希望重点学习的内容、擅长曲目等"
-                    className="w-full rounded-lg border-none bg-muted px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="w-full rounded-lg border-none bg-muted px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
               </div>
             </section>
 
             {/* Course Selection */}
-            <section className="rounded-xl bg-card p-6 shadow-card">
-              <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
-                <Mic className="h-5 w-5 text-primary" />
+            <section className="rounded-xl bg-card p-4 shadow-card sm:p-6">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
+                <Mic className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
                 选择课程
               </h2>
-              <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-3">
                 {courses.map((c) => {
                   const Icon = iconMap[c.icon] || Music;
                   const isSelected = selectedCourse === c.id;
@@ -214,20 +214,20 @@ export default function HomePage() {
                         setSelectedCourse(c.id);
                         setSelectedSlot('');
                       }}
-                      className={`flex items-center gap-3 rounded-lg p-4 text-left transition-all ${
+                      className={`flex items-center gap-2.5 rounded-lg p-3 text-left transition-all sm:gap-3 sm:p-4 ${
                         isSelected
                           ? 'ring-2 ring-primary bg-primary/5'
                           : 'bg-muted hover:bg-surface-container-high'
                       }`}
                     >
-                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${courseIconBgs[c.id] || 'bg-primary/20'}`}>
-                        <Icon className="h-5 w-5 text-foreground" />
+                      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg sm:h-10 sm:w-10 ${courseIconBgs[c.id] || 'bg-primary/20'}`}>
+                        <Icon className="h-4 w-4 text-foreground sm:h-5 sm:w-5" />
                       </div>
-                      <div>
-                        <div className="text-sm font-semibold text-foreground">{c.name}</div>
-                        <div className="text-xs text-muted-foreground">{c.teacher}</div>
+                      <div className="min-w-0">
+                        <div className="truncate text-xs font-semibold text-foreground sm:text-sm">{c.name}</div>
+                        <div className="text-[10px] text-muted-foreground sm:text-xs">{c.teacher}</div>
                       </div>
-                      {isSelected && <CheckCircle2 className="ml-auto h-5 w-5 shrink-0 text-primary" />}
+                      {isSelected && <CheckCircle2 className="ml-auto h-4 w-4 shrink-0 text-primary sm:h-5 sm:w-5" />}
                     </button>
                   );
                 })}
@@ -235,14 +235,14 @@ export default function HomePage() {
             </section>
 
             {/* Time Selection */}
-            <section className="rounded-xl bg-card p-6 shadow-card">
-              <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
-                <Clock className="h-5 w-5 text-primary" />
+            <section className="rounded-xl bg-card p-4 shadow-card sm:p-6">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
+                <Clock className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
                 选择时间
               </h2>
 
               {/* Date selector */}
-              <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
+              <div className="mt-4 flex gap-1.5 overflow-x-auto pb-2 sm:gap-2">
                 {dates.map((d) => {
                   const isSelected = selectedDate === d.date;
                   return (
@@ -253,14 +253,14 @@ export default function HomePage() {
                         setSelectedDate(d.date);
                         setSelectedSlot('');
                       }}
-                      className={`flex shrink-0 flex-col items-center rounded-lg px-4 py-2.5 text-center transition-all ${
+                      className={`flex shrink-0 flex-col items-center rounded-lg px-3 py-2 text-center transition-all sm:px-4 sm:py-2.5 ${
                         isSelected
                           ? 'bg-primary text-primary-foreground'
                           : 'bg-muted text-foreground hover:bg-surface-container-high'
                       }`}
                     >
-                      <span className="text-xs font-medium">{d.weekday}</span>
-                      <span className="text-sm font-semibold">{d.label}</span>
+                      <span className="text-[10px] font-medium sm:text-xs">{d.weekday}</span>
+                      <span className="text-xs font-semibold sm:text-sm">{d.label}</span>
                     </button>
                   );
                 })}
@@ -268,7 +268,7 @@ export default function HomePage() {
 
               {/* Time slot grid */}
               {selectedDate && (
-                <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
                   {filteredSlots.length === 0 && (
                     <div className="col-span-full py-8 text-center text-sm text-muted-foreground">
                       该日期暂无可用时段
@@ -317,8 +317,8 @@ export default function HomePage() {
               )}
 
               {!selectedDate && (
-                <div className="mt-4 flex items-center gap-2 rounded-lg bg-muted px-4 py-3 text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
+                <div className="mt-3 flex items-center gap-2 rounded-lg bg-muted px-3 py-2.5 text-xs text-muted-foreground sm:mt-4 sm:px-4 sm:py-3 sm:text-sm">
+                  <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   请先选择日期，查看可用时段
                 </div>
               )}
@@ -327,7 +327,7 @@ export default function HomePage() {
             {/* Error */}
             {error && (
               <div className="flex items-center gap-2 rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">
-                <AlertCircle className="h-4 w-4" />
+                <AlertCircle className="h-4 w-4 shrink-0" />
                 {error}
               </div>
             )}
@@ -343,10 +343,10 @@ export default function HomePage() {
             </button>
           </div>
 
-          {/* Right Sidebar */}
-          <div className="w-80 shrink-0 space-y-4">
+          {/* Right Sidebar - stacked below on mobile, side on lg */}
+          <div className="mt-6 space-y-3 lg:mt-0 lg:w-80 lg:shrink-0 lg:space-y-4">
             {/* Selected Course Summary */}
-            <div className="rounded-xl bg-card p-5 shadow-card">
+            <div className="rounded-xl bg-card p-4 shadow-card sm:p-5">
               <h3 className="text-sm font-semibold text-foreground">已选课程</h3>
               {selectedCourseInfo ? (
                 <div className="mt-3 space-y-2">
@@ -367,7 +367,7 @@ export default function HomePage() {
             </div>
 
             {/* Selected Time Summary */}
-            <div className="rounded-xl bg-card p-5 shadow-card">
+            <div className="rounded-xl bg-card p-4 shadow-card sm:p-5">
               <h3 className="text-sm font-semibold text-foreground">已选时间</h3>
               {selectedSlotInfo ? (
                 <div className="mt-3 space-y-2">
@@ -384,7 +384,7 @@ export default function HomePage() {
             </div>
 
             {/* Tips */}
-            <div className="rounded-xl bg-card p-5 shadow-card">
+            <div className="rounded-xl bg-card p-4 shadow-card sm:p-5">
               <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
                 <Info className="h-4 w-4 text-primary" />
                 温馨提示

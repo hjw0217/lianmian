@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (data.success) {
         localStorage.setItem('admin_token', data.token);
-        router.push('/admin');
+        router.replace('/admin');
       } else {
         setError(data.error || '登录失败');
       }
@@ -51,18 +51,18 @@ export default function AdminLoginPage() {
         <div className="absolute left-1/2 top-1/3 h-64 w-64 rounded-full bg-accent-pink/5 blur-3xl" />
       </div>
 
-      <div className="relative w-full max-w-sm px-6">
-        <div className="rounded-2xl bg-card p-8 shadow-float">
+      <div className="relative w-full max-w-sm px-5 sm:px-6">
+        <div className="rounded-2xl bg-card p-6 shadow-float sm:p-8">
           {/* Header */}
-          <div className="mb-6 text-center">
-            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-              <Mic className="h-7 w-7 text-primary" />
+          <div className="mb-5 text-center sm:mb-6">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 sm:h-14 sm:w-14">
+              <Mic className="h-6 w-6 text-primary sm:h-7 sm:w-7" />
             </div>
-            <h1 className="text-xl font-bold text-foreground">管理后台登录</h1>
+            <h1 className="text-lg font-bold text-foreground sm:text-xl">管理后台登录</h1>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-foreground">用户名</label>
               <input
@@ -98,7 +98,7 @@ export default function AdminLoginPage() {
 
             {error && (
               <div className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive">
-                <AlertCircle className="h-3.5 w-3.5" />
+                <AlertCircle className="h-3.5 w-3.5 shrink-0" />
                 {error}
               </div>
             )}
