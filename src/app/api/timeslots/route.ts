@@ -34,11 +34,41 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: '未授权，请先登录' }, { status: 401 });
     }
 
-    const { verifyAuthToken, addTimeSlot } = await import('@/lib/store');
+    const { verifyAuthToken } = await import('@/lib/store');
     if (!verifyAuthToken(token)) {
       return NextResponse.json({ error: '认证已过期，请重新登录' }, { status: 401 });
     }
 
+    const action = body.action as string | undefined;
+
+    if (action === 'delete') {
+      const { deleteTimeSlot } = await import('@/lib/store');
+      const id = body.id as string;
+      if (!id) {
+        return NextResponse.json({ error: '缺少时段 ID' }, { status: 400 });
+      }
+      await deleteTimeSlot(id);
+      return NextResponse.json({ success: true });
+    }
+
+    if (action === 'update') {
+      const { updateTimeSlot } = await import('@/lib/store');
+      const { id, date, startTime, endTime, teacher, status } = body;
+      if (!id) {
+        return NextResponse.json({ error: '缺少时段 ID' }, { status: 400 });
+      }
+      const slot = await updateTimeSlot(id, {
+        ...(date && { date }),
+        ...(startTime && { start_time: startTime }),
+        ...(endTime && { end_time: endTime }),
+        ...(teacher && { teacher }),
+        ...(status && { status }),
+      });
+      return NextResponse.json({ success: true, data: mapSlot(slot) });
+    }
+
+    // 默认：新增时段
+    const { addTimeSlot } = await import('@/lib/store');
     const { date, startTime, endTime, teacher } = body;
     if (!date || !startTime || !endTime || !teacher) {
       return NextResponse.json({ error: '缺少必填字段（日期、开始时间、结束时间、讲师）' }, { status: 400 });
