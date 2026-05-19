@@ -142,8 +142,10 @@ export async function createBooking(params: {
   // Before booking_open_time: not yet open for booking
   // After start_time: session already started, cannot book
   const now = new Date();
-  const bookingStart = slot.booking_open_time 
-    ? new Date(slot.booking_open_time)
+  // booking_open_time format: "2026-05-19T16:35" (datetime-local, 16 chars, no seconds)
+  // Append :00 for reliable Date parsing
+  const bookingStart = slot.booking_open_time
+    ? new Date(slot.booking_open_time.length === 16 ? slot.booking_open_time + ':00' : slot.booking_open_time)
     : null;
   const slotStart = new Date(`${slot.date}T${slot.start_time}:00`);
   if (bookingStart && now < bookingStart) throw new Error('预约尚未开放，开放时间为 ' + slot.booking_open_time);

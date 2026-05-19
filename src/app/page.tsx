@@ -195,12 +195,14 @@ export default function HomePage() {
                   )}
                   {filteredSlots.map((slot) => {
                     const isSelected = selectedSlot === slot.id;
+                    // bookingStartTime: 管理员设置的预约开放时间
+                    // 如果未设置，则不限制预约开放时间（随时可预约）
                     const bookingOpenTime = slot.bookingStartTime
-                      ? new Date(slot.bookingStartTime)
-                      : new Date(`${slot.date}T${slot.startTime}:00`);
+                      ? new Date(slot.bookingStartTime.length === 16 ? slot.bookingStartTime + ':00' : slot.bookingStartTime)
+                      : null;
                     const slotStartDateTime = new Date(`${slot.date}T${slot.startTime}:00`);
                     const now = new Date();
-                    const isBeforeOpen = now < bookingOpenTime;
+                    const isBeforeOpen = bookingOpenTime ? now < bookingOpenTime : false;
                     const isAlreadyStarted = now >= slotStartDateTime;
                     const isAvailable = slot.status === 'available' && !isBeforeOpen && !isAlreadyStarted;
                     return (
@@ -229,7 +231,7 @@ export default function HomePage() {
                         {!isAvailable && (
                           <span className="mt-1 text-xs text-muted-foreground/60">
                             {isBeforeOpen
-                              ? `${slot.bookingStartTime ? new Date(slot.bookingStartTime).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : slot.startTime}开放预约`
+                              ? `${new Date(slot.bookingStartTime!.length === 16 ? slot.bookingStartTime! + ':00' : slot.bookingStartTime!).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}开放预约`
                               : isAlreadyStarted ? '已开始' : '已约满'}
                           </span>
                         )}
