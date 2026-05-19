@@ -432,7 +432,7 @@ export default function AdminPage() {
                         </div>
                         {slot.bookingStartTime && (
                           <div className="text-xs text-muted-foreground">
-                            预约开放: {new Date(slot.bookingStartTime).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                            预约开放: {new Date((slot.bookingStartTime!.length === 16 ? slot.bookingStartTime! + ':00' : slot.bookingStartTime!) + '+08:00').toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                           </div>
                         )}
                       </div>
@@ -506,7 +506,7 @@ export default function AdminPage() {
                           </td>
                           <td className="px-4 py-3 text-xs text-muted-foreground">
                             {slot.bookingStartTime
-                              ? new Date(slot.bookingStartTime).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                              ? new Date((slot.bookingStartTime.length === 16 ? slot.bookingStartTime + ':00' : slot.bookingStartTime) + '+08:00').toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
                               : '-'}
                           </td>
                           <td className="px-4 py-3">
@@ -604,7 +604,7 @@ export default function AdminPage() {
                   <thead>
                     <tr className="border-b border-border/20 bg-muted/50">
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">预约编号</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">学员</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">学员名字【微信昵称】</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">讲师</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">预约时间</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">状态</th>

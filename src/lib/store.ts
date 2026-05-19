@@ -141,13 +141,13 @@ export async function createBooking(params: {
   // Check if booking is allowed (based on booking_open_time)
   // Before booking_open_time: not yet open for booking
   // After start_time: session already started, cannot book
+  // All times are Beijing time (UTC+8), append +08:00 for reliable Date parsing
   const now = new Date();
   // booking_open_time format: "2026-05-19T16:35" (datetime-local, 16 chars, no seconds)
-  // Append :00 for reliable Date parsing
   const bookingStart = slot.booking_open_time
-    ? new Date(slot.booking_open_time.length === 16 ? slot.booking_open_time + ':00' : slot.booking_open_time)
+    ? new Date((slot.booking_open_time.length === 16 ? slot.booking_open_time + ':00' : slot.booking_open_time) + '+08:00')
     : null;
-  const slotStart = new Date(`${slot.date}T${slot.start_time}:00`);
+  const slotStart = new Date(`${slot.date}T${slot.start_time}:00+08:00`);
   if (bookingStart && now < bookingStart) throw new Error('预约尚未开放，开放时间为 ' + slot.booking_open_time);
   if (now >= slotStart) throw new Error('该时段已开始，无法预约');
 

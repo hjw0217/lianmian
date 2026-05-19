@@ -70,7 +70,7 @@ export default function HomePage() {
 
   const handleSubmit = async () => {
     setError('');
-    if (!studentName.trim()) { setError('请输入学员姓名'); return; }
+    if (!studentName.trim()) { setError('请输入学员名字'); return; }
     if (!phone.trim()) { setError('请输入联系电话'); return; }
     if (!selectedSlot) { setError('请选择预约时段'); return; }
 
@@ -121,12 +121,12 @@ export default function HomePage() {
               </h2>
               <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
                 <div>
-                  <label className="mb-1.5 block text-sm font-medium text-foreground">学员姓名</label>
+                  <label className="mb-1.5 block text-sm font-medium text-foreground">学员名字【微信昵称】</label>
                   <input
                     type="text"
                     value={studentName}
                     onChange={(e) => setStudentName(e.target.value)}
-                    placeholder="请输入学员姓名"
+                    placeholder="请输入学员名字或微信昵称"
                     className="w-full rounded-lg border-none bg-muted px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
@@ -141,12 +141,12 @@ export default function HomePage() {
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="mb-1.5 block text-sm font-medium text-foreground">课程需求</label>
+                  <label className="mb-1.5 block text-sm font-medium text-foreground">您的班主任老师</label>
                   <input
                     type="text"
                     value={requirement}
                     onChange={(e) => setRequirement(e.target.value)}
-                    placeholder="可选，如希望重点学习的内容、擅长曲目等"
+                    placeholder="请输入您的班主任老师姓名"
                     className="w-full rounded-lg border-none bg-muted px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
@@ -198,9 +198,9 @@ export default function HomePage() {
                     // bookingStartTime: 管理员设置的预约开放时间
                     // 如果未设置，则不限制预约开放时间（随时可预约）
                     const bookingOpenTime = slot.bookingStartTime
-                      ? new Date(slot.bookingStartTime.length === 16 ? slot.bookingStartTime + ':00' : slot.bookingStartTime)
+                      ? new Date((slot.bookingStartTime.length === 16 ? slot.bookingStartTime + ':00' : slot.bookingStartTime) + '+08:00')
                       : null;
-                    const slotStartDateTime = new Date(`${slot.date}T${slot.startTime}:00`);
+                    const slotStartDateTime = new Date(`${slot.date}T${slot.startTime}:00+08:00`);
                     const now = new Date();
                     const isBeforeOpen = bookingOpenTime ? now < bookingOpenTime : false;
                     const isAlreadyStarted = now >= slotStartDateTime;
@@ -231,7 +231,7 @@ export default function HomePage() {
                         {!isAvailable && (
                           <span className="mt-1 text-xs text-muted-foreground/60">
                             {isBeforeOpen
-                              ? `${new Date(slot.bookingStartTime!.length === 16 ? slot.bookingStartTime! + ':00' : slot.bookingStartTime!).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}开放预约`
+                              ? `${new Date((slot.bookingStartTime!.length === 16 ? slot.bookingStartTime! + ':00' : slot.bookingStartTime!) + '+08:00').toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}开放预约`
                               : isAlreadyStarted ? '已开始' : '已约满'}
                           </span>
                         )}
