@@ -21,6 +21,7 @@ interface TimeSlot {
   status: 'available' | 'booked' | 'expired';
   maxParticipants: number;
   bookingCount: number;
+  bookingStartTime?: string;
 }
 
 export default function HomePage() {
@@ -194,9 +195,14 @@ export default function HomePage() {
                   )}
                   {filteredSlots.map((slot) => {
                     const isSelected = selectedSlot === slot.id;
-                    const slotDateTime = new Date(`${slot.date}T${slot.startTime}:00`);
-                    const hasStarted = slotDateTime <= new Date();
-                    const isAvailable = slot.status === 'available' && !hasStarted;
+                    const bookingOpenTime = slot.bookingStartTime
+                      ? new Date(slot.bookingStartTime)
+                      : new Date(`${slot.date}T${slot.startTime}:00`);
+                    const slotStartDateTime = new Date(`${slot.date}T${slot.startTime}:00`);
+                    const now = new Date();
+                    const isBeforeOpen = now < bookingOpenTime;
+                    const isAlreadyStarted = now >= slotStartDateTime;
+                    const isAvailable = slot.status === 'available' && !isBeforeOpen && !isAlreadyStarted;
                     return (
                       <button
                         key={slot.id}
@@ -222,7 +228,9 @@ export default function HomePage() {
                         </span>
                         {!isAvailable && (
                           <span className="mt-1 text-xs text-muted-foreground/60">
-                            {hasStarted ? '已开始' : slot.status === 'booked' ? '已约满' : '已过期'}
+                            {isBeforeOpen
+                              ? `${slot.bookingStartTime ? new Date(slot.bookingStartTime).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : slot.startTime}开放预约`
+                              : isAlreadyStarted ? '已开始' : '已约满'}
                           </span>
                         )}
                         {isAvailable && !isSelected && (

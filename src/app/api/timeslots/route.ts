@@ -11,6 +11,7 @@ function mapSlot(s: any) {
     teacher: s.teacher,
     maxParticipants: Number(s.max_participants) || 1,
     currentBookings: Number(s.current_bookings) || 0,
+    bookingStartTime: s.booking_open_time || '',
     status: s.status,
   };
 }
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
 
     // 默认：新增时段
     const { addTimeSlot } = await import('@/lib/store');
-    const { date, startTime, endTime, teacher, maxParticipants } = body;
+    const { date, startTime, endTime, teacher, maxParticipants, bookingStartTime } = body;
     if (!date || !startTime || !endTime) {
       return NextResponse.json({ error: '缺少必填字段（日期、开始时间、结束时间）' }, { status: 400 });
     }
@@ -82,6 +83,7 @@ export async function POST(request: Request) {
       id, date, start_time: startTime, end_time: endTime,
       teacher: teacher || '',
       max_participants: maxParticipants || 1,
+      booking_open_time: bookingStartTime || null,
       status: 'available',
     });
     return NextResponse.json({ success: true, data: mapSlot(slot) });
@@ -99,7 +101,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: '认证已过期，请重新登录' }, { status: 401 });
     }
 
-    const { id, date, startTime, endTime, teacher, status } = body;
+    const { id, date, startTime, endTime, teacher, status, maxParticipants, bookingStartTime } = body;
     if (!id) return NextResponse.json({ error: '缺少时段ID' }, { status: 400 });
 
     const updates: Record<string, unknown> = {};
@@ -108,6 +110,8 @@ export async function PUT(request: Request) {
     if (endTime) updates.end_time = endTime;
     if (teacher) updates.teacher = teacher;
     if (status) updates.status = status;
+    if (maxParticipants !== undefined) updates.max_participants = maxParticipants;
+    if (bookingStartTime !== undefined) updates.booking_start_time = bookingStartTime || null;
 
     const slot = await updateTimeSlot(id, updates);
     return NextResponse.json({ success: true, data: mapSlot(slot) });

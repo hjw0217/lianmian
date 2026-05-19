@@ -10,6 +10,7 @@ export interface TimeSlot {
   teacher: string;
   status: 'available' | 'booked';
   max_participants: number;
+  booking_open_time: string | null;
   created_at: string;
   updated_at: string | null;
 }
@@ -100,7 +101,7 @@ export async function addTimeSlot(slot: Omit<TimeSlot, 'created_at' | 'updated_a
   return data as TimeSlot;
 }
 
-export async function updateTimeSlot(id: string, updates: Partial<Pick<TimeSlot, 'date' | 'start_time' | 'end_time' | 'teacher' | 'status' | 'max_participants'>>): Promise<TimeSlot> {
+export async function updateTimeSlot(id: string, updates: Partial<Pick<TimeSlot, 'date' | 'start_time' | 'end_time' | 'teacher' | 'status' | 'max_participants' | 'booking_open_time'>>): Promise<TimeSlot> {
   const client = getClient();
   const { data, error } = await client.from('timeslots').update({ ...updates, updated_at: new Date().toISOString() }).eq('id', id).select().single();
   if (error) throw new Error(`更新时段失败: ${error.message}`);
@@ -137,9 +138,15 @@ export async function createBooking(params: {
   if (!slot) throw new Error('时间段不存在');
   if (slot.status === 'booked') throw new Error('该时段已被预约');
 
-  // Check if timeslot has already started
+  // Check if booking is allowed (based on booking_open_time)
+  // Before booking_open_time: not yet open for booking
+  // After start_time: session already started, cannot book
   const now = new Date();
+  const bookingStart = slot.booking_open_time 
+    ? new Date(slot.booking_open_time)
+    : null;
   const slotStart = new Date(`${slot.date}T${slot.start_time}:00`);
+  if (bookingStart && now < bookingStart) throw new Error('预约尚未开放，开放时间为 ' + slot.booking_open_time);
   if (now >= slotStart) throw new Error('该时段已开始，无法预约');
 
   // Check monthly booking limit: one booking per phone per month
@@ -274,6 +281,7 @@ export async function seedInitialData(): Promise<void> {
         teacher: teachers[teacherIdx],
         status: 'available',
         max_participants: 10,
+        booking_open_time: new Date().toISOString().slice(0, 16),
       });
       slotIndex++;
     }
