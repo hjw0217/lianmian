@@ -36,6 +36,7 @@ interface Booking {
   studentName: string;
   phone: string;
   requirement: string;
+  songTitle: string;
   teacher: string;
   date: string;
   timeSlot: string;
@@ -77,7 +78,12 @@ export default function AdminPage() {
     }
     const lines = [
       `${slot.teacher} ${slot.date} ${slot.startTime}-${slot.endTime}`,
-      ...slotBookings.map((b, i) => `${i + 1}. ${b.studentName} ${b.phone}`),
+      ...slotBookings.map((b, i) => {
+        const parts = [`${i + 1}. ${b.studentName} ${b.phone}`];
+        if (b.songTitle) parts.push(`曲目: ${b.songTitle}`);
+        if (b.requirement) parts.push(`班主任: ${b.requirement}`);
+        return parts.join(' ');
+      }),
     ];
     const text = lines.join('\n');
     navigator.clipboard.writeText(text).then(() => {

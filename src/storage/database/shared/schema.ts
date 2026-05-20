@@ -9,6 +9,7 @@ export const bookings = pgTable("bookings", {
 	studentName: varchar("student_name", { length: 50 }).notNull(),
 	phone: varchar({ length: 20 }).notNull(),
 	requirement: varchar({ length: 500 }),
+	songTitle: varchar("song_title", { length: 200 }),
 	teacher: varchar({ length: 50 }).notNull(),
 	date: varchar({ length: 10 }).notNull(),
 	timeSlot: varchar("time_slot", { length: 20 }).notNull(),

@@ -9,6 +9,7 @@ function mapBooking(b: any) {
     studentName: b.student_name,
     phone: b.phone,
     requirement: b.requirement,
+    songTitle: b.song_title,
     teacher: b.teacher,
     date: b.date,
     timeSlot: b.time_slot,
@@ -42,11 +43,11 @@ export async function POST(request: Request) {
     const { action } = body;
 
     if (action === 'create') {
-      const { studentName, phone, requirement, timeSlotId } = body;
+      const { studentName, phone, requirement, songTitle, timeSlotId } = body;
       if (!studentName || !phone || !timeSlotId) {
         return NextResponse.json({ error: '缺少必填字段' }, { status: 400 });
       }
-      const booking = await createBooking({ studentName, phone, requirement: requirement || '', timeSlotId });
+      const booking = await createBooking({ studentName, phone, requirement: requirement || '', songTitle: songTitle || '', timeSlotId });
       return NextResponse.json({ success: true, data: mapBooking(booking) });
     }
 

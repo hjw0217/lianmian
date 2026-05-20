@@ -32,6 +32,7 @@ export default function HomePage() {
   const [studentName, setStudentName] = useState('');
   const [phone, setPhone] = useState('');
   const [requirement, setRequirement] = useState('');
+  const [songTitle, setSongTitle] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -84,6 +85,7 @@ export default function HomePage() {
           studentName,
           phone,
           requirement,
+          songTitle,
           timeSlotId: selectedSlot,
         }),
       });
@@ -147,6 +149,16 @@ export default function HomePage() {
                     value={requirement}
                     onChange={(e) => setRequirement(e.target.value)}
                     placeholder="请输入您的班主任老师姓名"
+                    className="w-full rounded-lg border-none bg-muted px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="mb-1.5 block text-sm font-medium text-foreground">演唱曲目</label>
+                  <input
+                    type="text"
+                    value={songTitle}
+                    onChange={(e) => setSongTitle(e.target.value)}
+                    placeholder="请输入您要演唱的曲目"
                     className="w-full rounded-lg border-none bg-muted px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
