@@ -12,7 +12,6 @@ interface Booking {
   studentName: string;
   phone: string;
   requirement: string;
-  songTitle: string;
   teacher: string;
   date: string;
   timeSlot: string;
@@ -147,12 +146,6 @@ function ConfirmationContent() {
                 <div className="mt-2 rounded-lg bg-muted px-2.5 py-2 sm:mt-3 sm:px-3">
                   <div className="text-[10px] text-muted-foreground sm:text-xs">班主任老师</div>
                   <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.requirement}</div>
-                </div>
-              )}
-              {booking.songTitle && (
-                <div className="mt-2 rounded-lg bg-muted px-2.5 py-2 sm:mt-3 sm:px-3">
-                  <div className="text-[10px] text-muted-foreground sm:text-xs">演唱曲目</div>
-                  <div className="text-xs font-semibold text-foreground sm:text-sm">{booking.songTitle}</div>
                 </div>
               )}
             </div>
